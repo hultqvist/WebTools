@@ -17,12 +17,12 @@ namespace SilentOrbit
 		/// </summary>
         static List<string> classes = new List<string>();
 		
-        public static void Main(string[] args)
+        public static int Main(string[] args)
         {
             if (args.Length != 3)
             {
                 Console.Error.WriteLine("Usage: HtmlExtractor.exe WebRootPath/ Generated.Namespace Output.cs");
-                return;
+                return -1;
             }
 
             string webRoot = Path.GetFullPath(args[0]).TrimEnd(Path.DirectorySeparatorChar);
@@ -37,10 +37,12 @@ namespace SilentOrbit
 
                     output.WriteClasses(classes);
                 }
+                return 0;
             }
             catch (XmlException xe)
             {
                 Console.Error.WriteLine(xe.Message);
+                return -1;
             }
         }
 
