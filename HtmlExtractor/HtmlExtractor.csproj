@@ -55,4 +55,10 @@
       </Properties>
     </MonoDevelop>
   </ProjectExtensions>
+  <ItemGroup>
+    <ProjectReference Include="..\ProtoBuf\CodeWriter\CodeWriter.csproj">
+      <Project>{FFFA67D7-6E0B-4C5C-8B3C-9DDED536AC4A}</Project>
+      <Name>CodeWriter</Name>
+    </ProjectReference>
+  </ItemGroup>
 </Project>

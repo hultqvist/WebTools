@@ -16,11 +16,7 @@ namespace SilentOrbit
 		/// To generate "Classes" class
 		/// </summary>
         static List<string> classes = new List<string>();
-		/// <summary>
-		/// To detect duplicate IDs
-		/// </summary>
-        static List<string> IDs = new List<string>();
-
+		
         public static void Main(string[] args)
         {
             if (args.Length != 3)
