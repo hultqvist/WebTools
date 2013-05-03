@@ -1,0 +1,59 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HtmlExtractor", "HtmlExtractor\HtmlExtractor.csproj", "{92D09547-0A11-49EB-9550-CCCA9F13B6D0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{92D09547-0A11-49EB-9550-CCCA9F13B6D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{92D09547-0A11-49EB-9550-CCCA9F13B6D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{92D09547-0A11-49EB-9550-CCCA9F13B6D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{92D09547-0A11-49EB-9550-CCCA9F13B6D0}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = HtmlExtractor\HtmlExtractor.csproj
+		Policies = $0
+		$0.DotNetNamingPolicy = $1
+		$1.DirectoryNamespaceAssociation = PrefixedHierarchical
+		$1.ResourceNamePolicy = FileName
+		$0.TextStylePolicy = $2
+		$2.TabsToSpaces = False
+		$2.EolMarker = Unix
+		$2.inheritsSet = VisualStudio
+		$2.inheritsScope = text/plain
+		$2.scope = text/plain
+		$0.TextStylePolicy = $3
+		$3.inheritsSet = VisualStudio
+		$3.inheritsScope = text/plain
+		$3.scope = text/x-csharp
+		$0.CSharpFormattingPolicy = $4
+		$4.IndentSwitchBody = True
+		$4.AnonymousMethodBraceStyle = NextLine
+		$4.PropertyBraceStyle = NextLine
+		$4.PropertyGetBraceStyle = NextLine
+		$4.PropertySetBraceStyle = NextLine
+		$4.EventBraceStyle = NextLine
+		$4.EventAddBraceStyle = NextLine
+		$4.EventRemoveBraceStyle = NextLine
+		$4.StatementBraceStyle = NextLine
+		$4.ElseNewLinePlacement = NewLine
+		$4.CatchNewLinePlacement = NewLine
+		$4.FinallyNewLinePlacement = NewLine
+		$4.WhileNewLinePlacement = DoNotCare
+		$4.ArrayInitializerWrapping = DoNotChange
+		$4.ArrayInitializerBraceStyle = NextLine
+		$4.BeforeMethodDeclarationParentheses = False
+		$4.BeforeMethodCallParentheses = False
+		$4.BeforeConstructorDeclarationParentheses = False
+		$4.BeforeDelegateDeclarationParentheses = False
+		$4.NewParentheses = False
+		$4.SpacesBeforeBrackets = False
+		$4.inheritsSet = Mono
+		$4.inheritsScope = text/x-csharp
+		$4.scope = text/x-csharp
+	EndGlobalSection
+EndGlobal
