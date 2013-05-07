@@ -25,7 +25,7 @@ namespace SilentOrbit.Extractor
 
 		void MergeID(SelectorData parent)
 		{
-			foreach(var s in parent.Elements.ToArray())
+			foreach (var s in parent.Elements.ToArray())
 			{
 				MergeID(s);
 
@@ -33,22 +33,26 @@ namespace SilentOrbit.Extractor
 				if (s.Type == SelectorType.ID)
 				{
 					if (data.Elements.Contains(s) == false)
-						data.AddElements(s);
+						data.AddElement(s);
 				}
 			}
 		}
 
 		void MergeClasses(SelectorData parent)
 		{
-			foreach(var s in parent.Elements.ToArray())
+			foreach (var s in parent.Elements.ToArray())
 			{
 				MergeClasses(s);
 
-				foreach(var sub in s.Elements)
+				foreach (var sub in s.Elements)
 				{
 					if (sub.Type != SelectorType.Class)
 						continue;
-					parent.AddElements(sub);
+
+					if (parent.Type == SelectorType.Class && parent.Selector == sub.Selector)
+						continue;
+
+					parent.AddElement(sub);
 				}
 			}
 		}

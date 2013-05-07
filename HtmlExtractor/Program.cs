@@ -10,98 +10,98 @@ namespace SilentOrbit
 	/// <summary>
 	/// Scan and extract id and classes from all html files in given directory
 	/// </summary>
-    class MainClass
-    {
+	class MainClass
+	{
 		/// <summary>
 		/// To generate "Classes" class
 		/// </summary>
-        static List<string> classes = new List<string>();
-		
-        public static int Main(string[] args)
-        {
-            if (args.Length != 3)
-            {
-                Console.Error.WriteLine("Usage: HtmlExtractor.exe WebRootPath/ Generated.Namespace Output.cs");
-                return -1;
-            }
+		static List<string> classes = new List<string>();
 
-            string webRoot = Path.GetFullPath(args[0]).TrimEnd(Path.DirectorySeparatorChar);
-            string rootNamespace = args[1];
-            string outputPath = Path.GetFullPath(args[2]);
+		public static int Main(string[] args)
+		{
+			if (args.Length != 3)
+			{
+				Console.Error.WriteLine("Usage: HtmlExtractor.exe WebRootPath/ Generated.Namespace Output.cs");
+				return -1;
+			}
 
-            try
-            {
-                using (var output = new Saver(outputPath, rootNamespace))
-                {
-                    ScanDir(webRoot, webRoot, output);
+			string webRoot = Path.GetFullPath(args[0]).TrimEnd(Path.DirectorySeparatorChar);
+			string rootNamespace = args[1];
+			string outputPath = Path.GetFullPath(args[2]);
 
-                    output.WriteClasses(classes);
-                }
-                return 0;
-            }
-            catch (XmlException xe)
-            {
-                Console.Error.WriteLine(xe.Message);
-                return -1;
-            }
-        }
+			try
+			{
+				using (var output = new Saver(outputPath, rootNamespace))
+				{
+					ScanDir(webRoot, webRoot, output);
 
-        static void ScanDir(string webRoot, string path, Saver output)
-        {
-            string real = Path.Combine(path, "real");
-            if (File.Exists(real))
-            {
-                string rc = File.ReadAllText(real).Trim(' ', '\r', '\n');
-                string file = Path.GetFileName(path);
-                if (file != rc)
-                    return;
-            }
+					output.WriteClasses(classes);
+				}
+				return 0;
+			}
+			catch (XmlException xe)
+			{
+				Console.Error.WriteLine(xe.Message);
+				return -1;
+			}
+		}
 
-            string index = Path.Combine(path, "index.html");
-            string[] files;
-            if (File.Exists(index))
-                files = new string[] { index };
-            else
-                files = Directory.GetFiles(path, "*.html", SearchOption.TopDirectoryOnly);
+		static void ScanDir(string webRoot, string path, Saver output)
+		{
+			string real = Path.Combine(path, "real");
+			if (File.Exists(real))
+			{
+				string rc = File.ReadAllText(real).Trim(' ', '\r', '\n');
+				string file = Path.GetFileName(path);
+				if (file != rc)
+					return;
+			}
 
-            foreach (string f in files)
-            {
-                Console.WriteLine("Parsing: " + f);
-                //Get IDs and Classes
-                var data = HtmlParser.Extract(f);
+			string index = Path.Combine(path, "index.html");
+			string[] files;
+			if (File.Exists(index))
+				files = new string[] { index };
+			else
+				files = Directory.GetFiles(path, "*.html", SearchOption.TopDirectoryOnly);
 
-                //Extract global classes
-                data.GetClasses(classes);
-                data.GetIDs(classes);
+			foreach (string f in files)
+			{
+				Console.WriteLine("Parsing: " + f);
+				//Get IDs and Classes
+				var data = HtmlParser.Extract(f);
 
-                //Determine Namespace
-                string dir = Path.GetDirectoryName(f);
-                string ns = dir.Substring(webRoot.Length);
-                ns = ns.Replace("/", ".").Trim('.');
+				//Extract global classes
+				data.GetClasses(classes);
+				data.GetIDs(classes);
 
-                if (ns != "" && data.ClassName == "Index")
-                {
-                    //Move one namespace to classname
-                    string[] parts = ns.Split('.');
-                    ns = string.Join(".", parts, 0, parts.Length - 1);
+				//Determine Namespace
+				string dir = Path.GetDirectoryName(f);
+				string ns = dir.Substring(webRoot.Length);
+				ns = ns.Replace("/", ".").Trim('.');
 
-                    data.ClassName = parts[parts.Length - 1];
-                }
+				if (ns != "" && data.ClassName == "Index")
+				{
+					//Move one namespace to classname
+					string[] parts = ns.Split('.');
+					ns = string.Join(".", parts, 0, parts.Length - 1);
 
-                //Prepare 
-                SelectionMerger.Merge(data);
+					data.ClassName = parts[parts.Length - 1];
+				}
 
-                //Save
-                output.WriteClass(ns, data);
-                output.Flush();
-                Console.WriteLine("Written " + data.ClassName);
-            }
+				//Prepare 
+				SelectionMerger.Merge(data);
 
-            string[] dirs = Directory.GetDirectories(path);
-            foreach (string d in dirs)
-            {
-                ScanDir(webRoot, d, output);
-            }
-        }
-    }
+				//Save
+				output.WriteClass(ns, data);
+				output.Flush();
+				Console.WriteLine("Written " + data.ClassName);
+			}
+
+			string[] dirs = Directory.GetDirectories(path);
+			foreach (string d in dirs)
+			{
+				ScanDir(webRoot, d, output);
+			}
+		}
+	}
 }

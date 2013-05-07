@@ -18,7 +18,7 @@ namespace SilentOrbit.Extractor
 			this.path = path;
 
 			string text = File.ReadAllText(path, Encoding.UTF8);
-			if (text.StartsWith("<!DOCTYPE") == false)
+			if (text.StartsWith("<!DOCTYPE", StringComparison.InvariantCulture) == false)
 				text = "<div>" + text + "</div>";
 			text = text.Replace("&nbsp;", " ");
 			XmlReaderSettings xrs = new XmlReaderSettings();
@@ -41,23 +41,18 @@ namespace SilentOrbit.Extractor
 			HtmlData data = new HtmlData();
 			data.FileName = Path.GetFileName(path);
 			data.ClassName = Name.ToCamelCase(Path.GetFileNameWithoutExtension(path));
-
-			var root = Extract(doc.Root);
-			foreach(var r in root)
-				data.AddElements(r);
-
+			Extract(data, doc.Root);
 			return data;
 		}
 
-		static List<SelectorData> Extract(XElement element)
+		static void Extract(SelectorData data, XElement element)
 		{
-			List<SelectorData> list = new List<SelectorData>();
-
+			var list = new List<SelectorData>();
 			//Extract local ID
 			var IDattr = element.Attribute("id");
 			if (IDattr != null)
 			{
-				list.Add(SelectorData.ID(IDattr.Value));
+				list.Add(data.CreateID(IDattr.Value));
 			}
 
 			//Extract local classes
@@ -65,43 +60,30 @@ namespace SilentOrbit.Extractor
 			if (attrClasses != null)
 			{
 				var classes = attrClasses.Value.Split(' ');
-				foreach(string c in classes)
+				foreach (string c in classes)
 				{
 					if (c == "")
 						continue;
 
-					list.Add(SelectorData.Class(c));
+					list.Add(data.CreateClass(c));
 				}
 			}
 
 			//Get subelements
-			foreach(var xe in element.Elements())
+			foreach (var xe in element.Elements())
 			{
-				var sub = Extract(xe);
 				if (list.Count == 0)
 				{
-					foreach(var s in sub)
-						list.Add(s);
+					Extract(data, xe);
 				}
 				else
 				{
-					foreach(var l in list)
-						foreach(var s in sub)
-							l.AddElements(s);
+					foreach (var l in list)
+					{
+						Extract(l, xe);
+					}
 				}
 			}
-
-			return list;
-		}
-
-		static void AddClass(string c, List<string> classes)
-		{
-			if (c == "")
-				return;
-			if (classes.Contains(c))
-				return;
-
-			classes.Add(c);
 		}
 	}
 }

@@ -47,7 +47,7 @@ namespace SilentOrbit.Extractor
 			WriteLine("public const string FileName = \"" + data.FileName + "\";");
 
 			Bracket("public static class CSS");
-			foreach(var sub in data.Elements)
+			foreach (var sub in data.Elements)
 				WriteElements("", sub);
 			EndBracket();
 
@@ -71,21 +71,15 @@ namespace SilentOrbit.Extractor
 			}*/
 
 			WriteLine("[JsType(JsMode.Json)]");
-			Bracket("public static class " + Name.ToCamelCase(sel.Selector));
-
+			string className = Name.ToCamelCase(sel.Selector);
 			if (sel.Type == SelectorType.ID)
-				WriteLine("public const string ID = \"" + cssSelector + "\";");
+				className = "Id" + className;
 			if (sel.Type == SelectorType.Class)
-				WriteLine("public const string Class = \"" + cssSelector + "\";");
+				className = "Class" + className;
+			Bracket("public static class " + className);
+			WriteLine("public const string Selector = \"" + cssSelector + "\";");
 
-			/*Bracket("public override string ToString()");
-			if (sel.Type == SelectorType.ID)
-				WriteLine("return ID;");
-			if (sel.Type == SelectorType.Class)
-				WriteLine("return Class;");
-			EndBracket();*/
-
-			foreach(var sub in sel.Elements)
+			foreach (var sub in sel.Elements)
 				WriteElements(cssSelector, sub);
 
 			EndBracket();
@@ -96,7 +90,7 @@ namespace SilentOrbit.Extractor
 			WriteLine("[JsType(JsMode.Json)]");
 			Bracket("public static class Classes");
 
-			foreach(string c in classes)
+			foreach (string c in classes)
 				WriteLine("public const string " + Name.ToCamelCase(c) + " = \"." + c + "\";");
 
 			EndBracket();
