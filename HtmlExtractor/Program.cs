@@ -48,15 +48,6 @@ namespace SilentOrbit
 
 		static void ScanDir(string webRoot, string path, Saver output)
 		{
-			string real = Path.Combine(path, "real");
-			if (File.Exists(real))
-			{
-				string rc = File.ReadAllText(real).Trim(' ', '\r', '\n');
-				string file = Path.GetFileName(path);
-				if (file != rc)
-					return;
-			}
-
 			string index = Path.Combine(path, "index.html");
 			string[] files;
 			if (File.Exists(index))

@@ -8,50 +8,40 @@ namespace SilentOrbit.Extractor
 {
 	class Saver : SilentOrbit.ProtocolBuffers.CodeWriter
 	{
+		readonly string rootNamespace;
+
 		public Saver(string path, string rootNamespace) : base(path)
 		{
+			this.rootNamespace = rootNamespace;
 			IndentPrefix = "\t";
+			NewLine = "\n";
 			WriteLine("using SharpKit.JavaScript;");
-			Bracket("namespace " + rootNamespace);
 		}
 
 		public override void Dispose()
 		{
-			EndBracket();
 			base.Dispose();
 		}
 
 		public void WriteClass(string ns, HtmlData data)
 		{
-			if (ns == "Fragment")
-			{
-				Comment("Fragment");
-				//WriteLine("[JsType(JsMode.Prototype)]");
-				//WriteLine("[JsType(JsMode.Json)]");
-				Bracket("public partial class " + data.ClassName);
-			}
+			if(ns == "")
+				Bracket("namespace " + rootNamespace);
 			else
-			{
-				if (ns != "")
-				{
-					Comment("Non null ns: " + ns);
-					WriteLine("[JsType(JsMode.Prototype)]");
-					Bracket("public static partial class " + ns);
-				}
-				else
-					Comment("null ns");
-				WriteLine("[JsType(JsMode.Json)]");
-				Bracket("public static partial class " + data.ClassName);
-			}
+				Bracket("namespace " + rootNamespace + "." + ns);
+
+			Bracket("public partial class " + data.ClassName);
 			WriteLine("public const string StateName = \"" + Path.GetFileNameWithoutExtension(data.FileName) + "\";");
 			WriteLine("public const string FileName = \"" + data.FileName + "\";");
 
 			Bracket("public static class CSS");
 			foreach (var sub in data.Elements)
 				WriteElements("", sub);
-			EndBracket();
+			EndBracket(); //CSS
 
-			EndBracket();
+			EndBracket(); //class
+
+			EndBracket(); //namespace
 		}
 
 		public void WriteElements(string selector, SelectorData sel)
@@ -78,6 +68,10 @@ namespace SilentOrbit.Extractor
 				className = "Class" + className;
 			Bracket("public static class " + className);
 			WriteLine("public const string Selector = \"" + cssSelector + "\";");
+			if (sel.Type == SelectorType.ID)
+				WriteLine("public const string ID = \"" + sel.Selector + "\";");
+			if (sel.Type == SelectorType.Class)
+				WriteLine("public const string Class = \"" + sel.Selector + "\";");
 
 			foreach (var sub in sel.Elements)
 				WriteElements(cssSelector, sub);
