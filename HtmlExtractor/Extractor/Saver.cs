@@ -16,6 +16,7 @@ namespace SilentOrbit.Extractor
 			IndentPrefix = "\t";
 			NewLine = "\n";
 			WriteLine("using SharpKit.JavaScript;");
+			WriteLine("using SharpKit.Html;");
 		}
 
 		public override void Dispose()
@@ -34,13 +35,10 @@ namespace SilentOrbit.Extractor
 			WriteLine("public const string StateName = \"" + Path.GetFileNameWithoutExtension(data.FileName) + "\";");
 			WriteLine("public const string FileName = \"" + data.FileName + "\";");
 
-			Bracket("public static class CSS");
 			foreach (var sub in data.Elements)
 				WriteElements("", sub);
-			EndBracket(); //CSS
 
 			EndBracket(); //class
-
 			EndBracket(); //namespace
 		}
 
@@ -67,12 +65,20 @@ namespace SilentOrbit.Extractor
 			if (sel.Type == SelectorType.Class)
 				className = "Class" + className;
 			Bracket("public static class " + className);
+
+			//ID/Class and Selector
 			WriteLine("public const string Selector = \"" + cssSelector + "\";");
 			if (sel.Type == SelectorType.ID)
+			{
 				WriteLine("public const string ID = \"" + sel.Selector + "\";");
+
+				WriteLine("[JsProperty(Name=\"document.getElementById(\\\"" + sel.Selector + "\\\")\", NativeField=true, Global=true)]");
+				WriteLine("public static HtmlElement Element { get { return null; } }");
+			}
 			if (sel.Type == SelectorType.Class)
 				WriteLine("public const string Class = \"" + sel.Selector + "\";");
 
+			//Sub elements
 			foreach (var sub in sel.Elements)
 				WriteElements(cssSelector, sub);
 
