@@ -19,21 +19,15 @@ namespace SilentOrbit
 
 		public static int Main(string[] args)
 		{
-			if (args.Length != 3)
-			{
-				Console.Error.WriteLine("Usage: HtmlExtractor.exe WebRootPath/ Generated.Namespace Output.cs");
+			var options = Options.Parse(args);
+			if(options == null)
 				return -1;
-			}
-
-			string webRoot = Path.GetFullPath(args[0]).TrimEnd(Path.DirectorySeparatorChar);
-			string rootNamespace = args[1];
-			string outputPath = Path.GetFullPath(args[2]);
 
 			try
 			{
-				using (var output = new Saver(outputPath, rootNamespace))
+				using (var output = new Saver(options))
 				{
-					ScanDir(webRoot, webRoot, output);
+					ScanDir(options, options.WebRoot, output);
 
 					output.WriteClasses(classes);
 				}
@@ -46,7 +40,7 @@ namespace SilentOrbit
 			}
 		}
 
-		static void ScanDir(string webRoot, string path, Saver output)
+		static void ScanDir(Options options, string path, Saver output)
 		{
 			string index = Path.Combine(path, "index.html");
 			string[] files;
@@ -67,7 +61,7 @@ namespace SilentOrbit
 
 				//Determine Namespace
 				string dir = Path.GetDirectoryName(f);
-				string ns = dir.Substring(webRoot.Length);
+				string ns = dir.Substring(options.WebRoot.Length);
 				ns = ns.Replace("/", ".").Trim('.');
 
 				if (ns != "" && data.ClassName == "Index")
@@ -82,6 +76,8 @@ namespace SilentOrbit
 				//Prepare 
 				SelectionMerger.Merge(data);
 
+				data.ClassName += options.FileSuffix;
+
 				//Save
 				output.WriteClass(ns, data);
 				output.Flush();
@@ -91,7 +87,7 @@ namespace SilentOrbit
 			string[] dirs = Directory.GetDirectories(path);
 			foreach (string d in dirs)
 			{
-				ScanDir(webRoot, d, output);
+				ScanDir(options, d, output);
 			}
 		}
 	}

@@ -8,11 +8,11 @@ namespace SilentOrbit.Extractor
 {
 	class Saver : SilentOrbit.ProtocolBuffers.CodeWriter
 	{
-		readonly string rootNamespace;
+		readonly Options options;
 
-		public Saver(string path, string rootNamespace) : base(path)
+		public Saver(Options options) : base(options.OutputCS)
 		{
-			this.rootNamespace = rootNamespace;
+			this.options = options;
 			IndentPrefix = "\t";
 			NewLine = "\n";
 			WriteLine("using SharpKit.JavaScript;");
@@ -27,9 +27,9 @@ namespace SilentOrbit.Extractor
 		public void WriteClass(string ns, HtmlData data)
 		{
 			if(ns == "")
-				Bracket("namespace " + rootNamespace);
+				Bracket("namespace " + options.Namespace);
 			else
-				Bracket("namespace " + rootNamespace + "." + ns);
+				Bracket("namespace " + options.Namespace + "." + ns);
 
 			Bracket("public partial class " + data.ClassName);
 			WriteLine("public const string StateName = \"" + Path.GetFileNameWithoutExtension(data.FileName) + "\";");
