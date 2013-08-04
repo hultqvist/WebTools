@@ -4,3 +4,6 @@
 [submodule "commandline"]
 	path = commandline
 	url = https://github.com/gsscoder/commandline
+[submodule "DnsSharp"]
+	path = DnsSharp
+	url = git@github.com:hultqvist/DnsSharp.git

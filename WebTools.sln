@@ -1,11 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HtmlExtractor", "HtmlExtractor\HtmlExtractor.csproj", "{92D09547-0A11-49EB-9550-CCCA9F13B6D0}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeWriter", "ProtoBuf\CodeWriter\CodeWriter.csproj", "{FFFA67D7-6E0B-4C5C-8B3C-9DDED536AC4A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommandLine", "commandline\src\CommandLine\CommandLine.csproj", "{E1BD3C65-49C3-49E7-BABA-C60980CB3F20}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HtmlExtractor", "HtmlExtractor\HtmlExtractor.csproj", "{92D09547-0A11-49EB-9550-CCCA9F13B6D0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebTools", "WebTools\WebTools.csproj", "{93B3A9EC-4FE6-4FEB-8ACA-44E1A34A23B3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ARSoft.Tools.Net", "DnsSharp\ARSoft.Tools.Net\ARSoft.Tools.Net.csproj", "{65BFA748-C640-49B0-B506-34BBB165233A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,10 +17,18 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{65BFA748-C640-49B0-B506-34BBB165233A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{65BFA748-C640-49B0-B506-34BBB165233A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{65BFA748-C640-49B0-B506-34BBB165233A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{65BFA748-C640-49B0-B506-34BBB165233A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{92D09547-0A11-49EB-9550-CCCA9F13B6D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{92D09547-0A11-49EB-9550-CCCA9F13B6D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{92D09547-0A11-49EB-9550-CCCA9F13B6D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{92D09547-0A11-49EB-9550-CCCA9F13B6D0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{93B3A9EC-4FE6-4FEB-8ACA-44E1A34A23B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{93B3A9EC-4FE6-4FEB-8ACA-44E1A34A23B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{93B3A9EC-4FE6-4FEB-8ACA-44E1A34A23B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{93B3A9EC-4FE6-4FEB-8ACA-44E1A34A23B3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E1BD3C65-49C3-49E7-BABA-C60980CB3F20}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E1BD3C65-49C3-49E7-BABA-C60980CB3F20}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E1BD3C65-49C3-49E7-BABA-C60980CB3F20}.Release|Any CPU.ActiveCfg = Release|Any CPU

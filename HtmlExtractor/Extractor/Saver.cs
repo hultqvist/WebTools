@@ -6,7 +6,7 @@ using SilentOrbit.Code;
 
 namespace SilentOrbit.Extractor
 {
-	class Saver : SilentOrbit.ProtocolBuffers.CodeWriter
+	class Saver : CodeWriter
 	{
 		readonly Options options;
 
@@ -17,11 +17,6 @@ namespace SilentOrbit.Extractor
 			NewLine = "\n";
 			WriteLine("using SharpKit.JavaScript;");
 			WriteLine("using SharpKit.Html;");
-		}
-
-		public override void Dispose()
-		{
-			base.Dispose();
 		}
 
 		public void WriteClass(string ns, HtmlData data)

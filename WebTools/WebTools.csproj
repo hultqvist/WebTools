@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>10.0.0</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{93B3A9EC-4FE6-4FEB-8ACA-44E1A34A23B3}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>SilentOrbit</RootNamespace>
+    <AssemblyName>HtmlParser</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Web" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Web\HttpFetcher.cs" />
+    <Compile Include="Web\HttpFetchException.cs" />
+    <Compile Include="Web\HttpFetchResponse.cs" />
+    <Compile Include="Web\WebFetcher.cs" />
+    <Compile Include="IO\LineReader.cs" />
+    <Compile Include="IO\StreamLineReader.cs" />
+    <Compile Include="Parsing\DateParser.cs" />
+    <Compile Include="Parsing\DocumentParser.cs" />
+    <Compile Include="Parsing\FeedDetector.cs" />
+    <Compile Include="Parsing\FeedParser.cs" />
+    <Compile Include="Parsing\Html.cs" />
+    <Compile Include="Parsing\HtmlCleaner.cs" />
+    <Compile Include="Parsing\Tag.cs" />
+    <Compile Include="Parsing\TagNamespace.cs" />
+    <Compile Include="Parsing\TagParser.cs" />
+    <Compile Include="Parsing\HtmlRewriter.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <Folder Include="IO\" />
+    <Folder Include="Parsing\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DnsSharp\ARSoft.Tools.Net\ARSoft.Tools.Net.csproj">
+      <Project>{65BFA748-C640-49B0-B506-34BBB165233A}</Project>
+      <Name>ARSoft.Tools.Net</Name>
+    </ProjectReference>
+  </ItemGroup>
+</Project>
