@@ -9,23 +9,34 @@ namespace SilentOrbit.Parsing
 	/// <summary>
 	/// Parse any xml like document.
 	/// </summary>
-	public abstract class TagParser
+	public sealed class TagParser
 	{
+        //Whitespace
 		static char[] wsp = new char[] { ' ', '\t', '\r', '\n' };
+        //Whitespace + end tag cahracters
 		static char[] tagWsp = new char[] { ' ', '\t', '\r', '\n', '/', '>' };
 		readonly string raw;
+        readonly ITagOutput output;
 		Tag topTag = null;
 
-		protected TagParser(Stream stream)
+        TagParser(string rawContent, ITagOutput output)
 		{
-			using(TextReader r = new StreamReader(stream, Encoding.UTF8))
-				this.raw = r.ReadToEnd();
+			this.raw = rawContent;
+            this.output = output;
 		}
 
-		protected TagParser(string raw)
-		{
-			this.raw = raw;
-		}
+        public static void Parse(Stream inputStream, ITagOutput output)
+        {
+            using(TextReader r = new StreamReader(inputStream, Encoding.UTF8))
+                Parse(r.ReadToEnd(), output);
+        }
+
+        public static void Parse(string raw, ITagOutput output)
+        {
+            var p = new TagParser(raw, output);
+            p.Parse();
+        }
+
 		//Idea needs more work: Remake as iterator
 		/*
 			 * var parser;
@@ -86,12 +97,12 @@ namespace SilentOrbit.Parsing
 						{
 							//Remaining is CDATA, though an error, this will be our iterpretation
 							cdata = raw.Substring(pos);
-							ParsedText(cdata);
+							output.ParsedText(topTag, cdata);
 							parsed = raw.Length;
 							break;
 						}
 						cdata = raw.Substring(pos, cdataEnd - pos);
-						ParsedText(cdata);
+                        output.ParsedText(topTag, cdata);
 
 						pos = cdataEnd + 3;
 						parsed = pos;
@@ -179,11 +190,9 @@ namespace SilentOrbit.Parsing
 				return nsKey;
 
 			//else use the prefix as namespace
-			ParseError("Missing namespace: " + nsKey + ":" + name);
+            output.ParseError("Missing namespace: " + nsKey + ":" + name);
 			return nsKey;
 		}
-
-		protected abstract void ParsedAttribute(Tag tag, TagNamespace ns, string key, string val);
 
 		void ParseAttributes(Tag tag, int start, int end)
 		{
@@ -246,11 +255,9 @@ namespace SilentOrbit.Parsing
 
 				//Namespace usage
 				var nsAttr = ParseNamespacePrefix(tag, ref key);
-				ParsedAttribute(tag, nsAttr, key, val);
+                output.ParsedAttribute(tag, nsAttr, key, val);
 			}
 		}
-
-		protected abstract void ParsedOpeningTag(Tag tag);
 
 		void GotOpeningTag(Tag tag)
 		{
@@ -259,10 +266,8 @@ namespace SilentOrbit.Parsing
 			if (!tag.SelfClosed)
 				topTag = tag;
 
-			ParsedOpeningTag(tag);
+            output.ParsedOpeningTag(tag);
 		}
-
-		protected abstract void ParsedClosingTag(Tag tag);
 
 		void GotClosingTag(Tag tag)
 		{
@@ -273,17 +278,15 @@ namespace SilentOrbit.Parsing
 			//Close all tags up to the closing tag
 			while (topTag.Name != tag.Name && topTag.Namespace != tag.Namespace)
 			{
-				ParseError("Missing matching close tag for <" + topTag.Name + ">");
-				ParsedClosingTag(topTag);
+                output.ParseError("Missing matching close tag for <" + topTag.Name + ">");
+                output.ParsedClosingTag(topTag);
 				topTag = topTag.Parent;
 			}
-			ParsedClosingTag(topTag);
+            output.ParsedClosingTag(topTag);
 			topTag = topTag.Parent;
 
 			parsed = pos;
 		}
-
-		protected abstract void ParsedText(string decodedText);
 
 		void WriteUnparsed(int toPos)
 		{
@@ -291,18 +294,12 @@ namespace SilentOrbit.Parsing
 			if (parsed < toPos)
 			{
 				string decoded = HttpUtility.HtmlDecode(raw.Substring(parsed, toPos - parsed));
-				ParsedText(decoded);
+                output.ParsedText(topTag, decoded);
 			}
 
 			parsed = toPos;
 		}
 
-		protected virtual void ParseError(string message)
-		{
-			#if DEBUG
-			Console.WriteLine(message);
-			#endif
-		}
 	}
 }
 

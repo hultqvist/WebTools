@@ -9,10 +9,13 @@ namespace SilentOrbit.Extractor
 	class Saver : CodeWriter
 	{
 		readonly Options options;
+		readonly Obfuscator ob;
 
-		public Saver(Options options) : base(options.OutputCS)
+		public Saver(Options options, Obfuscator ob) : base(options.OutputCS)
 		{
 			this.options = options;
+			this.ob = ob;
+
 			IndentPrefix = "\t";
 			NewLine = "\n";
 			WriteLine("using SharpKit.JavaScript;");
@@ -31,19 +34,26 @@ namespace SilentOrbit.Extractor
 			WriteLine("public const string FileName = \"" + data.FileName + "\";");
 
 			foreach (var sub in data.Elements)
-				WriteElements("", sub);
+				WriteElements("", "", sub);
 
 			EndBracket(); //class
 			EndBracket(); //namespace
 		}
 
-		public void WriteElements(string selector, SelectorData sel)
+		public void WriteElements(string selector, string obSelector, SelectorData sel)
 		{
 			string cssSelector;
+			string cssSelectorObfuscated;
 			if (sel.Type == SelectorType.ID)
+			{
 				cssSelector = "#" + sel.Selector;
+				cssSelectorObfuscated = "#" + ob.ObfuscateID(sel.Selector);
+			}
 			else if (sel.Type == SelectorType.Class)
+			{
 				cssSelector = (selector + " ." + sel.Selector).Trim();
+				cssSelectorObfuscated = (obSelector + " ." + ob.ObfuscateClass(sel.Selector)).Trim();
+			}
 			else
 				throw new NotImplementedException();
 
@@ -62,6 +72,8 @@ namespace SilentOrbit.Extractor
 			Bracket("public static class " + className);
 
 			//ID/Class and Selector
+			WriteLine("#if DEBUG");
+
 			WriteLine("public const string Selector = \"" + cssSelector + "\";");
 			if (sel.Type == SelectorType.ID)
 			{
@@ -73,9 +85,24 @@ namespace SilentOrbit.Extractor
 			if (sel.Type == SelectorType.Class)
 				WriteLine("public const string Class = \"" + sel.Selector + "\";");
 
+			WriteLine("#else");
+
+			WriteLine("public const string Selector = \"" + cssSelectorObfuscated + "\";");
+			if (sel.Type == SelectorType.ID)
+			{
+				WriteLine("public const string ID = \"" + ob.ObfuscateID(sel.Selector) + "\";");
+
+				WriteLine("[JsProperty(Name=\"document.getElementById(\\\"" + ob.ObfuscateID(sel.Selector) + "\\\")\", NativeField=true, Global=true)]");
+				WriteLine("public static HtmlElement Element { get { return null; } }");
+			}
+			if (sel.Type == SelectorType.Class)
+				WriteLine("public const string Class = \"" + ob.ObfuscateClass(sel.Selector) + "\";");
+
+			WriteLine("#endif");
+
 			//Sub elements
 			foreach (var sub in sel.Elements)
-				WriteElements(cssSelector, sub);
+				WriteElements(cssSelector, cssSelectorObfuscated, sub);
 
 			EndBracket();
 		}

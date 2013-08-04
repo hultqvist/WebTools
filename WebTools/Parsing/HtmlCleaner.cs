@@ -6,7 +6,7 @@ using System.IO;
 
 namespace SilentOrbit.Parsing
 {
-	public class HtmlCleaner : TagParser
+    public class HtmlCleaner : ITagOutput
 	{
 		/// <summary>
 		/// Tag names allowed
@@ -93,18 +93,18 @@ namespace SilentOrbit.Parsing
 		/// </summary>
 		Tag hidden = null;
 
-		HtmlCleaner(string raw, TextWriter writer) : base(raw)
+		HtmlCleaner(TextWriter writer)
 		{
 			this.writer = writer;
 		}
 
 		public static void Clean(string raw, TextWriter writer)
 		{
-			var c = new HtmlCleaner(raw, writer);
-			c.Parse();
+			var c = new HtmlCleaner(writer);
+            TagParser.Parse(raw, c);
 		}
 
-		protected override void ParsedAttribute(Tag tag, TagNamespace ns, string key, string val)
+		public void ParsedAttribute(Tag tag, TagNamespace ns, string key, string val)
 		{
 			key = key.ToLowerInvariant();
 			if (tag.Attributes.ContainsKey(key))
@@ -187,7 +187,7 @@ namespace SilentOrbit.Parsing
 		/// Possibly selfclosed
 		/// </summary>
 		/// <param name="tag">Tag.</param>
-		protected override void ParsedOpeningTag(Tag tag)
+		public void ParsedOpeningTag(Tag tag)
 		{
 			string name = tag.Name;
 			switch(name)
@@ -257,7 +257,7 @@ namespace SilentOrbit.Parsing
 			writer.Write(">");
 		}
 
-		protected override void ParsedClosingTag(Tag tag)
+		public void ParsedClosingTag(Tag tag)
 		{
 			if (hidden != null)
 			{
@@ -294,13 +294,17 @@ namespace SilentOrbit.Parsing
 			}
 		}
 
-		protected override void ParsedText(string decodedText)
+		public void ParsedText(Tag parent, string decodedText)
 		{
 			if (hidden != null)
 				return;
 
 			writer.Write(HttpUtility.HtmlEncode(decodedText));
 		}
+
+        public void ParseError(string message)
+        {
+        }
 	}
 }
 

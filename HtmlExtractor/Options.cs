@@ -17,8 +17,11 @@ namespace SilentOrbit
 		[Option("namespace", Required = true, HelpText = "Root Namespace")]
 		public string Namespace { get; set; }
 
-		[Option("output", Required = true, HelpText = "Output path to generated .cs file")]
+		[Option("outputCS", Required = true, HelpText = "Output path to generated .cs file")]
 		public string OutputCS { get; set; }
+
+		[Option("outputHTML", Required = true, HelpText = "Output path to modified HTML files")]
+		public string OutputHTML { get; set; }
 
 		[Option("suffix", Required = false, HelpText = "Append to the end of each file related class name")]
 		public string FileSuffix { get; set; }
@@ -35,6 +38,7 @@ namespace SilentOrbit
 
 			options.WebRoot = Path.GetFullPath(options.WebRoot).TrimEnd(Path.DirectorySeparatorChar);
 			options.OutputCS = Path.GetFullPath(options.OutputCS);
+			options.OutputHTML = Path.GetFullPath(options.OutputHTML);
 			return options;
 		}
 	}

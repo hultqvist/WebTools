@@ -32,16 +32,21 @@
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.Linq" />
+    <Reference Include="System.Web" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Extractor\HtmlData.cs" />
-    <Compile Include="Extractor\HtmlParser.cs" />
     <Compile Include="Extractor\Saver.cs" />
     <Compile Include="Extractor\SelectorData.cs" />
     <Compile Include="Extractor\SelectionMerger.cs" />
     <Compile Include="Options.cs" />
+    <Compile Include="Extractor\HtmlCompressor.cs" />
+    <Compile Include="Obfuscator.cs" />
+    <Compile Include="Extractor\HtmlClassIdExtractor.cs" />
+    <Compile Include="Extractor\HtmlWriter.cs" />
+    <Compile Include="Extractor\HtmlObfuscator.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
