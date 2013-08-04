@@ -16,7 +16,6 @@ namespace SilentOrbit.Extractor
 		public static void Merge(HtmlData data)
 		{
 			var sm = new SelectionMerger(data);
-			Console.WriteLine("Merging: " + data.FileName);
 
 			sm.MergeClasses(data);
 

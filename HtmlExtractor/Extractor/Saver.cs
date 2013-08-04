@@ -113,7 +113,18 @@ namespace SilentOrbit.Extractor
 			Bracket("public static class Classes");
 
 			foreach (string c in classes)
-				WriteLine("public const string " + Name.ToCamelCase(c) + " = \"." + c + "\";");
+			{
+				string cc = Name.ToCamelCase(c);
+				string co = ob.ObfuscateClass(c);
+
+				WriteLine("#if DEBUG");
+				WriteLine("public const string " + cc + "Selector = \"." + c + "\";");
+				WriteLine("public const string " + cc + "Class = \"" + c + "\";");
+				WriteLine("#else");
+				WriteLine("public const string " + cc + "Selector = \"." + co + "\";");
+				WriteLine("public const string " + cc + "Class = \"" + co + "\";");
+				WriteLine("#endif");
+			}
 
 			EndBracket();
 		}

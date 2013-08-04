@@ -22,37 +22,34 @@ namespace SilentOrbit
 
 		public static int Main(string[] args)
 		{
-#if DEBUG
-			string cwd = Directory.GetCurrentDirectory();
-			cwd = Path.GetFullPath(Path.Combine(cwd, "../../../../WebClient/"));
-			Directory.SetCurrentDirectory(cwd);
-			args = new string[]{
-				"--htmlroot", "Html/",
-				"--suffix", "Fragment",
-				"--namespace", "SilentOrbit.Script",
-				"--outputCS", "Script/Generated.cs",
-				"--outputHTML", "HtmlRelease/"
-			};
-#endif
 			var options = Options.Parse(args);
 			if(options == null)
 				return -1;
 
-			try
+			using (var output = new Saver(options, ob))
 			{
-				using (var output = new Saver(options, ob))
-				{
-					ScanDir(options, options.WebRoot, output);
+				ScanDir(options, options.WebRoot, output);
 
-					output.WriteClasses(classes);
+				//CSS obfuscation
+				if (options.InputCSS != null)
+				{
+					CssObfuscator.Obfuscate(options.InputCSS, options.OutputCSS, ob);
+					Console.WriteLine("Obfuscated: " + options.InputCSS);
 				}
-				return 0;
+
+				ob.ExportClasses(classes);
+
+				output.WriteClasses(classes);
+				Console.WriteLine("Written: " + options.OutputCS);
 			}
-			catch (XmlException xe)
+
+			//Export obfuscation data
+			using (TextWriter tw = new StreamWriter(Path.Combine(options.WebRoot, "obfuscation.txt")))
 			{
-				Console.Error.WriteLine(xe.Message);
-				return -1;
+				tw.Write(ob.Export());
 			}
+
+			return 0;
 		}
 
 		static void ScanDir(Options options, string path, Saver output)
@@ -68,21 +65,37 @@ namespace SilentOrbit
 			{
 				Console.WriteLine("Parsing: " + f);
 
-				//Parse HTML ID and class and write modified html at the same time
-				string outputPath = Path.Combine(options.OutputHTML, f.Substring(options.WebRoot.Length + 1));
-				Directory.CreateDirectory(Path.GetDirectoryName(outputPath));
-
 				HtmlData data;
-				using (FileStream input = File.Open(f, FileMode.Open))
-				using (var writer = new HtmlWriter(outputPath))
-				{
-					ITagOutput tagout = writer;
-					tagout = new HtmlCompressor(tagout);
-					tagout = new HtmlObfuscator(ob, tagout);
-					var extract = new HtmlClassIdExtractor(tagout, f);
-					TagParser.Parse(input, extract);
 
-					data = extract.HtmlData;
+				//Parse HTML ID and class and write modified html at the same time
+				string outputPath = null;
+				if (options.OutputHTML != null)
+				{
+					outputPath = Path.Combine(options.OutputHTML, f.Substring(options.WebRoot.Length + 1));
+					Directory.CreateDirectory(Path.GetDirectoryName(outputPath));
+
+					using (FileStream input = File.Open(f, FileMode.Open))
+					using (var writer = new HtmlWriter(outputPath))
+					{
+						ITagOutput tagout = writer;
+						tagout = new HtmlCompressor(tagout);
+						tagout = new HtmlObfuscator(ob, tagout);
+						var extract = new HtmlClassIdExtractor(tagout, f);
+						TagParser.Parse(input, extract);
+
+						data = extract.HtmlData;
+					}
+				}
+				else
+				{
+					using (FileStream input = File.Open(f, FileMode.Open))
+					{
+						var hob = new HtmlObfuscator(ob, new NullOutput());
+						var extract = new HtmlClassIdExtractor(hob, f);
+						TagParser.Parse(input, extract);
+
+						data = extract.HtmlData;
+					}
 				}
 
 				//Get IDs and Classes
@@ -112,7 +125,7 @@ namespace SilentOrbit
 				//Save
 				output.WriteClass(ns, data);
 				output.Flush();
-				Console.WriteLine("Written " + data.ClassName);
+				//Console.WriteLine("Written " + data.ClassName);
 			}
 
 			string[] dirs = Directory.GetDirectories(path);

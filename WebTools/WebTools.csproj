@@ -48,6 +48,7 @@
     <Compile Include="Parsing\TagNamespace.cs" />
     <Compile Include="Parsing\TagParser.cs" />
     <Compile Include="Parsing\ITagOutput.cs" />
+    <Compile Include="Parsing\NullOutput.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
