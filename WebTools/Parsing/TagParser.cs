@@ -60,7 +60,7 @@ namespace SilentOrbit.Parsing
 		int pos = 0;
 		int tagEnd = 0;
 
-		protected void Parse()
+		void Parse()
 		{
 			while (true)
 			{

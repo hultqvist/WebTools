@@ -27,6 +27,7 @@ namespace SilentOrbit.Parsing
 		public string After { get; set; }
 
 		public readonly Dictionary<string,string> Attributes = new Dictionary<string, string>();
+
 		/// <summary>
 		/// Local namespace of this tag and below
 		/// </summary>
