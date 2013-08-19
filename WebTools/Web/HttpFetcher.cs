@@ -131,6 +131,8 @@ namespace SilentOrbit.Web
 
 			//IPv4
 			r = DnsClient.Default.Resolve(hostname, RecordType.A);
+			if(r == null)
+				return null;
 			foreach(var ar in r.AnswerRecords)
 			{
 				var a = ar as ARecord;
@@ -141,6 +143,8 @@ namespace SilentOrbit.Web
 
 			//IPv6
 			r = DnsClient.Default.Resolve(hostname, RecordType.Aaaa);
+			if(r == null)
+				return null;
 			foreach(var ar in r.AnswerRecords)
 			{
 				var a = ar as AaaaRecord;
@@ -179,6 +183,8 @@ namespace SilentOrbit.Web
 
 			//HTTP response
 			string line = reader.ReadLine();
+			if(line == null)
+				throw new EndOfStreamException();
 			string[] parts = line.Split(new char[] { ' ' }, 3);
 
 			resp.HttpVersion = parts[0];
