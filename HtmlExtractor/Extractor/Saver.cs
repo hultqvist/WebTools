@@ -24,7 +24,7 @@ namespace SilentOrbit.Extractor
 
 		public void WriteClass(string ns, HtmlData data)
 		{
-			if(ns == "")
+			if (ns == "")
 				Bracket("namespace " + options.Namespace);
 			else
 				Bracket("namespace " + options.Namespace + "." + ns);
@@ -73,31 +73,15 @@ namespace SilentOrbit.Extractor
 
 			//ID/Class and Selector
 			WriteLine("#if DEBUG");
-
+			
 			WriteLine("public const string Selector = \"" + cssSelector + "\";");
-			if (sel.Type == SelectorType.ID)
-			{
-				WriteLine("public const string ID = \"" + sel.Selector + "\";");
-
-				WriteLine("[JsProperty(Name=\"document.getElementById(\\\"" + sel.Selector + "\\\")\", NativeField=true, Global=true)]");
-				WriteLine("public static HtmlElement Element { get { return null; } }");
-			}
-			if (sel.Type == SelectorType.Class)
-				WriteLine("public const string Class = \"" + sel.Selector + "\";");
-
+			RenderIdSelectors(sel, false);
+			
 			WriteLine("#else");
 
 			WriteLine("public const string Selector = \"" + cssSelectorObfuscated + "\";");
-			if (sel.Type == SelectorType.ID)
-			{
-				WriteLine("public const string ID = \"" + ob.ObfuscateID(sel.Selector) + "\";");
-
-				WriteLine("[JsProperty(Name=\"document.getElementById(\\\"" + ob.ObfuscateID(sel.Selector) + "\\\")\", NativeField=true, Global=true)]");
-				WriteLine("public static HtmlElement Element { get { return null; } }");
-			}
-			if (sel.Type == SelectorType.Class)
-				WriteLine("public const string Class = \"" + ob.ObfuscateClass(sel.Selector) + "\";");
-
+			RenderIdSelectors(sel, true);
+			
 			WriteLine("#endif");
 
 			//Sub elements
@@ -105,6 +89,31 @@ namespace SilentOrbit.Extractor
 				WriteElements(cssSelector, cssSelectorObfuscated, sub);
 
 			EndBracket();
+		}
+
+		void RenderIdSelectors(SelectorData sel, bool obfuscate)
+		{
+			if (sel.Type == SelectorType.ID)
+			{
+				string id = (obfuscate ? ob.ObfuscateID(sel.Selector) : sel.Selector);
+				WriteLine("public const string ID = \"" + id + "\";");
+				
+				string type = "HtmlElement";
+				if (sel.TagName == "input")
+					type = "HtmlInputElement";
+				if (sel.TagName == "form")
+					type = "HtmlFormElement";
+				if (sel.TagName == "select")
+					type = "HtmlSelectElement";
+				
+				WriteLine("[JsProperty(Name=\"document.getElementById(\\\"" + id + "\\\")\", NativeField=true, Global=true)]");
+				WriteLine("public static " + type + " Element { get { return null; } }");
+			}
+			if (sel.Type == SelectorType.Class)
+			{
+				string classname = (obfuscate ? ob.ObfuscateClass(sel.Selector) : sel.Selector);
+				WriteLine("public const string Class = \"" + classname + "\";");
+			}
 		}
 
 		public void WriteClasses(List<string> classes)

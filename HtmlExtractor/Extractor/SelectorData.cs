@@ -12,6 +12,8 @@ namespace SilentOrbit.Extractor
 
 	public class SelectorData
 	{
+		public string TagName { get; set; }
+	
 		public SelectorType Type { get; set; }
 
 		public string Selector { get; set; }
@@ -40,15 +42,6 @@ namespace SilentOrbit.Extractor
 				return GetClass(s.Selector);
 			if (s.Type == SelectorType.ID)
 				return GetID(s.Selector);
-			throw new NotImplementedException();
-		}
-
-		public SelectorData Create(SelectorData s)
-		{
-			if (s.Type == SelectorType.Class)
-				return CreateClass(s.Selector);
-			if (s.Type == SelectorType.ID)
-				return CreateID(s.Selector);
 			throw new NotImplementedException();
 		}
 
@@ -93,7 +86,7 @@ namespace SilentOrbit.Extractor
 			return null;
 		}
 
-		public SelectorData CreateID(string name)
+		public SelectorData CreateID(string name, string tagName)
 		{
 			//Find existing
 			var s = GetID(name);
@@ -102,6 +95,7 @@ namespace SilentOrbit.Extractor
 
 			//Create new
 			s = new SelectorData();
+			s.TagName = tagName;
 			s.Selector = name;
 			s.Type = SelectorType.ID;
 			Elements.Add(s);

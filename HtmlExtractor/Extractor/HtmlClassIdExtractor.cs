@@ -60,7 +60,7 @@ namespace SilentOrbit.Extractor
 			{
 				//Extract local ID
 				if (id != null)
-					s.Selectors.Add(data.CreateID(id));
+					s.Selectors.Add(data.CreateID(id, tag.Name));
 
 				//Extract local classes
 				foreach (string c in classes)
