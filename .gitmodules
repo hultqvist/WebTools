@@ -1,6 +1,6 @@
 [submodule "ProtoBuf"]
 	path = ProtoBuf
-	url = git://github.com/hultqvist/ProtoBuf.git
+	url = https://github.com/hultqvist/ProtoBuf.git
 [submodule "commandline"]
 	path = commandline
 	url = https://github.com/gsscoder/commandline

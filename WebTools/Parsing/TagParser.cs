@@ -276,7 +276,7 @@ namespace SilentOrbit.Parsing
 				return; //More to skip
 
 			//Close all tags up to the closing tag
-			while (topTag.Name != tag.Name && topTag.Namespace != tag.Namespace)
+			while (topTag.Name != tag.Name || topTag.Namespace != tag.Namespace)
 			{
                 output.ParseError("Missing matching close tag for <" + topTag.Name + ">");
                 output.ParsedClosingTag(topTag);
