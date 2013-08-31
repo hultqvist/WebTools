@@ -20,11 +20,10 @@ namespace SilentOrbit.IO
             string line = Encoding.ASCII.GetString(lineBuffer);
             return line;
         }
-
         //helper for ReadHeader
         string nextLine = null;
         bool firstHeaderLine = true;
-        
+
         /// <summary>
         /// Reads and unfolds a header "line".
         /// This method do read ahead unless it return "".
@@ -53,7 +52,7 @@ namespace SilentOrbit.IO
                     return line;
                 if (nextLine == "")
                     return line;
-                if (nextLine [0] == ' ' || nextLine [0] == '\t') //Folding detected
+                if (nextLine[0] == ' ' || nextLine[0] == '\t') //Folding detected
                 {
                     line += nextLine;
                     continue;
