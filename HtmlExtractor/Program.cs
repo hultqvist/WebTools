@@ -23,7 +23,7 @@ namespace SilentOrbit
 		public static int Main(string[] args)
 		{
 			var options = Options.Parse(args);
-			if(options == null)
+			if (options == null)
 				return -1;
 
 			using (var output = new Saver(options, ob))

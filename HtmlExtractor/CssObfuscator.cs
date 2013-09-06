@@ -29,9 +29,9 @@ namespace SilentOrbit
 					writer = new StreamWriter(output, false, Encoding.UTF8);
 
 				var co = new CssObfuscator(
-					reader.ReadToEnd(),
-					writer,
-					ob);
+					         reader.ReadToEnd(),
+					         writer,
+					         ob);
 				co.Obfuscate();
 
 				writer.Close();
@@ -42,31 +42,107 @@ namespace SilentOrbit
 
 		void Obfuscate()
 		{
-			int p = 0;
+			Obfuscate(css);
+		}
+
+		void Obfuscate(string unparsed)
+		{
+			unparsed = unparsed.Trim(wsp);
 			while (true)
 			{
-				int start = css.IndexOf("{", p);
-				if (start < 0)
+				if (unparsed == "")
 					break;
-				int end = css.IndexOf("}", start);
+				
+				if (unparsed.StartsWith("/*"))
+				{
+					int end = unparsed.IndexOf("*/");
+					if (end < 0)
+						break;
+					unparsed = unparsed.Substring(end + 2).Trim(wsp);
+					continue;
+				}
+				
+				if (unparsed.StartsWith("@import"))
+				{
+					int end = unparsed.IndexOfAny(new char[] { ';', '{', '}' });
+					if (end < 0 || unparsed[end] != ';')
+						throw new InvalidDataException("Missing ; after @import");
+						
+					writer.WriteLine(unparsed.Substring(0, end + 1));
+					unparsed = unparsed.Substring(end + 1).Trim(wsp);
+					continue;
+				}
+				
+				if (unparsed.StartsWith("@media"))
+				{
+					int end = unparsed.IndexOfAny(new char[] { ';', '{', '}' });
+					if (end < 0 || unparsed[end] != '{')
+						throw new InvalidDataException("Missing { after @media");
+					
+					writer.WriteLine(unparsed.Substring(0, end + 1));
+					unparsed = unparsed.Substring(end + 1).Trim(wsp);
+					
+					//Find ending "}" count brackets only
+					//We assume "{" and "}" only exist as block separators and not inside strings.
+					int nesting = 1;
+					end = 0;
+					while (true)
+					{
+						end = unparsed.IndexOfAny(new char[] { '{', '}' }, end);
+						if (end < 0)
+							throw new InvalidDataException("Unmatched brackets");
+						if (unparsed[end] == '{')
+						{
+							nesting += 1;
+							end += 1;
+							continue;
+						}
+						if (unparsed[end] == '}')
+						{
+							nesting -= 1;
+							if (nesting == 0)
+								break; //end points at ending "}"
+							end += 1;
+							continue;
+						}
+						throw new InvalidProgramException();
+					}
+					
+					string inside = unparsed.Substring(0, end);
+					Obfuscate(inside);
+					
+					writer.WriteLine("}");
+					unparsed = unparsed.Substring(end + 1).Trim(wsp);
+					continue;
+				}
+				
+				//css selector rule
+				{
+					int end = unparsed.IndexOfAny(new char[] { ';', '{', '}' });
+					if (end < 0 || unparsed[end] != '{')
+						throw new InvalidDataException("Missing { after css selector");
+					string sel = unparsed.Substring(0, end);
+					unparsed = unparsed.Substring(end + 1).Trim(wsp);
+					
+					//Possible ',' spearated multiple selector groups
+					string[] selGroup = sel.Split(',');
+	
+					for (int n = 0; n < selGroup.Length; n++)
+						selGroup[n] = ObfuscateSelectors(selGroup[n]);
 
-				//Posible ',' spearated multiple selector groups
-				string sel = css.Substring(p, start - p).Trim(wsp);
-				string[] selGroup = sel.Split(',');
+					//Write selectors
+					sel = string.Join(",", selGroup);
+					writer.Write(sel + "{");
 
-				for (int n = 0; n < selGroup.Length; n++)
-					selGroup[n] = ObfuscateSelectors(selGroup[n]);
-
-				//Write selectors
-				sel = string.Join(",", selGroup);
-				writer.WriteLine(sel);
-
-				//Content inside {}
-				writer.WriteLine(css.Substring(start, end - start + 1));
-
-				p = end + 1;
+					//Content inside {}
+					end = unparsed.IndexOfAny(new char[] { '{', '}' });
+					if (end < 0 || unparsed[end] != '}')
+						throw new InvalidDataException("Missing }");
+					writer.WriteLine(unparsed.Substring(0, end + 1)); //Include "}"
+					
+					unparsed = unparsed.Substring(end + 1).Trim(wsp);
+				}
 			}
-			writer.Write(css.Substring(p));
 		}
 
 		string ObfuscateSelectors(string selector)
