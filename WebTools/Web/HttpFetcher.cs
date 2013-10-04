@@ -46,12 +46,12 @@ namespace SilentOrbit.Web
 		{
 			try
 			{
-				using(var f = new HttpFetcher())
+				using (var f = new HttpFetcher())
 				{
 					return f.Get(new Uri(url));
 				}
 			}
-			catch(Exception e)
+			catch (Exception e)
 			{
 				Console.WriteLine(e);
 				var resp = new HttpFetchResponse();
@@ -131,9 +131,9 @@ namespace SilentOrbit.Web
 
 			//IPv4
 			r = DnsClient.Default.Resolve(hostname, RecordType.A);
-			if(r == null)
+			if (r == null)
 				return null;
-			foreach(var ar in r.AnswerRecords)
+			foreach (var ar in r.AnswerRecords)
 			{
 				var a = ar as ARecord;
 				if (a == null)
@@ -143,9 +143,9 @@ namespace SilentOrbit.Web
 
 			//IPv6
 			r = DnsClient.Default.Resolve(hostname, RecordType.Aaaa);
-			if(r == null)
+			if (r == null)
 				return null;
-			foreach(var ar in r.AnswerRecords)
+			foreach (var ar in r.AnswerRecords)
 			{
 				var a = ar as AaaaRecord;
 				if (a == null)
@@ -165,12 +165,12 @@ namespace SilentOrbit.Web
 		public void SendGetRequest(Uri uri)
 		{
 			string request = "GET " + uri.PathAndQuery + " HTTP/1.1\r\n" +
-				"Host: " + uri.Host + "\r\n" + 
-				"User-Agent: " + UserAgent + "\r\n" + 
-				"Accept: " + Accept + "\r\n" + 
-				(IfModifiedSince > DateTime.MinValue ? "If-Modified-Since: " + IfModifiedSince.ToUniversalTime().ToString("r") + "\r\n" : "") +
-				"Connection: " + (KeepAlive ? "Keep-Alive" : "close") + "\r\n" + 
-				"\r\n";
+			                 "Host: " + uri.Host + "\r\n" +
+			                 "User-Agent: " + UserAgent + "\r\n" +
+			                 "Accept: " + Accept + "\r\n" +
+			                 (IfModifiedSince > DateTime.MinValue ? "If-Modified-Since: " + IfModifiedSince.ToUniversalTime().ToString("r") + "\r\n" : "") +
+			                 "Connection: " + (KeepAlive ? "Keep-Alive" : "close") + "\r\n" +
+			                 "\r\n";
 			DebugLine(request);
 			var buffer = Encoding.ASCII.GetBytes(request);
 			stream.Write(buffer, 0, buffer.Length);
@@ -183,7 +183,7 @@ namespace SilentOrbit.Web
 
 			//HTTP response
 			string line = reader.ReadLine();
-			if(line == null)
+			if (line == null)
 				throw new EndOfStreamException();
 			string[] parts = line.Split(new char[] { ' ' }, 3);
 
@@ -193,7 +193,7 @@ namespace SilentOrbit.Web
 			{
 				resp.StatusCode = (HttpStatusCode)int.Parse(parts[1]);
 			}
-			catch(FormatException)
+			catch (FormatException)
 			{
 				resp.StatusCode = (HttpStatusCode)(-1);
 				resp.StatusMessage = "Invalid HTTP StatusCode: " + line;
@@ -232,7 +232,7 @@ namespace SilentOrbit.Web
 					continue;
 #endif
 
-				switch(key)
+				switch (key)
 				{
 					case "location":
 						resp.Location = val;
@@ -293,6 +293,7 @@ namespace SilentOrbit.Web
 					case "host-header":
 					case "link":
 					case "ms-author-via":
+					case "alternate-protocol":
 						break; //Ignore
 					default:
 						throw new NotImplementedException(line);
@@ -309,7 +310,7 @@ namespace SilentOrbit.Web
 			if (resp.ContentLength == 0)
 				return;
 
-			using(Timer timeout = new Timer(ReadTimeout, null, TimeSpan.FromMinutes(3), Timeout.InfiniteTimeSpan))
+			using (Timer timeout = new Timer(ReadTimeout, null, TimeSpan.FromMinutes(3), Timeout.InfiniteTimeSpan))
 			{
 				if (resp.ChunkedTransferEncoding)
 				{
