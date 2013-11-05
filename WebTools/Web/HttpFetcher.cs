@@ -74,6 +74,7 @@ namespace SilentOrbit.Web
 		{
 			if (socket != null)
 				socket.Shutdown(SocketShutdown.Both);
+			socket = null;
 		}
 
 		public void Connect(Uri address)

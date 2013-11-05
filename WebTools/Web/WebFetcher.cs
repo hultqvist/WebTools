@@ -2,6 +2,7 @@ using System;
 using System.Net;
 using SilentOrbit.Web;
 using System.Net.Sockets;
+using System.Threading;
 
 namespace SilentOrbit.Web
 {
@@ -20,13 +21,16 @@ namespace SilentOrbit.Web
 
 		public HttpFetchResponse Fetch(Uri url)
 		{
+			//Timeout 2 minutes
+			Timer t = new Timer((s) => Http.Dispose(), null, 60000, Timeout.Infinite);
 			try
 			{
-				//Previoulsy we used a exception catcher here
+				//Previously we used a exception catcher here
 				return FetchInternal(url);
 			}
 			finally
 			{
+				t.Dispose();
 				Http.Dispose();
 			}
 		}
