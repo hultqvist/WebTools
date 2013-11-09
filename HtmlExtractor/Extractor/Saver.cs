@@ -29,6 +29,7 @@ namespace SilentOrbit.Extractor
 			else
 				Bracket("namespace " + options.Namespace + "." + ns);
 
+			WriteLine("[JsType(JsMode.Json)]");
 			Bracket("public partial class " + data.ClassName);
 			WriteLine("public const string StateName = \"" + Path.GetFileNameWithoutExtension(data.FileName) + "\";");
 			WriteLine("public const string FileName = \"" + data.FileName + "\";");

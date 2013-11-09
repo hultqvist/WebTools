@@ -124,8 +124,6 @@ namespace SilentOrbit
 
 				//Save
 				output.WriteClass(ns, data);
-				output.Flush();
-				//Console.WriteLine("Written " + data.ClassName);
 			}
 
 			string[] dirs = Directory.GetDirectories(path);
