@@ -30,7 +30,7 @@ namespace SilentOrbit.Extractor
 				Bracket("namespace " + options.Namespace + "." + ns);
 
 			WriteLine("[JsType(JsMode.Json)]");
-			Bracket("public partial class " + data.ClassName);
+			Bracket((options.AccessInternal ? "internal" : "public") +" partial class " + data.ClassName);
 			WriteLine("public const string StateName = \"" + Path.GetFileNameWithoutExtension(data.FileName) + "\";");
 			WriteLine("public const string FileName = \"" + data.FileName + "\";");
 
@@ -120,7 +120,7 @@ namespace SilentOrbit.Extractor
 		public void WriteClasses(List<string> classes)
 		{
 			WriteLine("[JsType(JsMode.Json)]");
-			Bracket("public static class Classes");
+			Bracket((options.AccessInternal ? "internal" : "public") + " static class Classes");
 
 			foreach (string c in classes)
 			{

@@ -17,14 +17,22 @@ namespace SilentOrbit
 		[Option("namespace", Required = true, HelpText = "Root Namespace")]
 		public string Namespace { get; set; }
 
+		[Option("suffix", Required = false, HelpText = "Append to the end of each file related class name")]
+		public string FileSuffix { get; set; }
+
+		/// <summary>
+		/// Generated code is internal rather than public(default)
+		/// </summary>
+		/// <value><c>true</c> if access internal; otherwise, <c>false</c>.</value>
+		[Option("internal", Required = false, HelpText = "Generate internal classes rather than public(default)")]
+		public bool AccessInternal { get; set; }
+
 		[Option("outputCS", Required = true, HelpText = "Output path to generated .cs file")]
 		public string OutputCS { get; set; }
 
 		[Option("outputHTML", Required = false, HelpText = "Output path to modified HTML files")]
 		public string OutputHTML { get; set; }
 
-		[Option("suffix", Required = false, HelpText = "Append to the end of each file related class name")]
-		public string FileSuffix { get; set; }
 
 		[Option("inputCSS", Required = false, HelpText = "Single CSS file to be read")]
 		public string InputCSS { get; set; }
