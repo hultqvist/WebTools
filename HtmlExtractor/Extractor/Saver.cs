@@ -32,7 +32,8 @@ namespace SilentOrbit.Extractor
 			WriteLine("[JsType(JsMode.Json)]");
 			Bracket((options.AccessInternal ? "internal" : "public") +" partial class " + data.ClassName);
 			WriteLine("public const string StateName = \"" + Path.GetFileNameWithoutExtension(data.FileName) + "\";");
-			WriteLine("public const string FileName = \"" + data.FileName + "\";");
+			if(options.GenerateFilenameProperties)
+				WriteLine("public const string FileName = \"" + data.FileName + "\";");
 
 			foreach (var sub in data.Elements)
 				WriteElements("", "", sub);

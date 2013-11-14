@@ -23,9 +23,11 @@ namespace SilentOrbit
 		/// <summary>
 		/// Generated code is internal rather than public(default)
 		/// </summary>
-		/// <value><c>true</c> if access internal; otherwise, <c>false</c>.</value>
 		[Option("internal", Required = false, HelpText = "Generate internal classes rather than public(default)")]
 		public bool AccessInternal { get; set; }
+
+		[Option("filename-property", Required = false, HelpText = "Generate properties for each file containing its name")]
+		public bool GenerateFilenameProperties { get; set; }
 
 		[Option("outputCS", Required = true, HelpText = "Output path to generated .cs file")]
 		public string OutputCS { get; set; }
