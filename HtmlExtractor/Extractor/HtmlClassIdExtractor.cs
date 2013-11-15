@@ -28,7 +28,7 @@ namespace SilentOrbit.Extractor
 			this.output = output;
 
 			HtmlData.FileName = Path.GetFileName(path);
-			HtmlData.ClassName = Name.ToCamelCase(Path.GetFileNameWithoutExtension(path));
+			HtmlData.FragmentName = Name.ToCamelCase(Path.GetFileNameWithoutExtension(path));
 
 			var s = new StackItem(null);
 			s.Selectors.Add(HtmlData);
@@ -37,6 +37,8 @@ namespace SilentOrbit.Extractor
 
 		public void ParsedAttribute(Tag tag, TagNamespace ns, string key, string val)
 		{
+			if(tag.Attributes.ContainsKey(key))
+				throw new ArgumentException("duplicate key: " + key + " = " + val);
 			tag.Attributes.Add(key, val);
 		}
 
@@ -68,7 +70,7 @@ namespace SilentOrbit.Extractor
 					if (c == "")
 						continue;
 
-					s.Selectors.Add(data.CreateClass(c));
+					s.Selectors.Add(data.CreateClass(c, tag.Name));
 				}
 			}
 

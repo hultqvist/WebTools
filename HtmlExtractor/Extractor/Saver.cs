@@ -22,7 +22,7 @@ namespace SilentOrbit.Extractor
 			WriteLine("using SharpKit.Html;");
 		}
 
-		public void WriteClass(string ns, HtmlData data)
+		public void WriteFragment(string ns, HtmlData data)
 		{
 			if (ns == "")
 				Bracket("namespace " + options.Namespace);
@@ -30,7 +30,7 @@ namespace SilentOrbit.Extractor
 				Bracket("namespace " + options.Namespace + "." + ns);
 
 			WriteLine("[JsType(JsMode.Json)]");
-			Bracket((options.AccessInternal ? "internal" : "public") +" partial class " + data.ClassName);
+			Bracket((options.AccessInternal ? "internal" : "public") +" partial class " + data.FragmentName);
 			WriteLine("public const string StateName = \"" + Path.GetFileNameWithoutExtension(data.FileName) + "\";");
 			if(options.GenerateFilenameProperties)
 				WriteLine("public const string FileName = \"" + data.FileName + "\";");
@@ -66,27 +66,29 @@ namespace SilentOrbit.Extractor
 			}*/
 
 			WriteLine("[JsType(JsMode.Json)]");
-			string className = Name.ToCamelCase(sel.Selector);
-			if (sel.Type == SelectorType.ID)
-				className = "Id" + className;
-			if (sel.Type == SelectorType.Class)
-				className = "Class" + className;
-			Bracket("public static class " + className);
+			Bracket("public class " + sel.ClassName + " : " + sel.SkType);
 
 			//ID/Class and Selector
-			WriteLine("#if DEBUG");
+			if(options.MinimizeNames)
+				WriteLine("#if DEBUG");
 			
 			WriteLine("public const string Selector = \"" + cssSelector + "\";");
 			RenderIdSelectors(sel, false);
-			
-			WriteLine("#else");
 
-			WriteLine("public const string Selector = \"" + cssSelectorObfuscated + "\";");
-			RenderIdSelectors(sel, true);
-			
-			WriteLine("#endif");
+			//WriteLine("[JsField(Name=\"querySelector(\\\"" + cssSelector + "\\\")\")]");
+			//WriteLine("public string Query;");
 
-			//Sub elements
+			if (options.MinimizeNames)
+			{
+				WriteLine("#else");
+
+				WriteLine("public const string Selector = \"" + cssSelectorObfuscated + "\";");
+				RenderIdSelectors(sel, true);
+			
+				WriteLine("#endif");
+			}
+
+			//Sub element classes
 			foreach (var sub in sel.Elements)
 				WriteElements(cssSelector, cssSelectorObfuscated, sub);
 
@@ -95,27 +97,50 @@ namespace SilentOrbit.Extractor
 
 		void RenderIdSelectors(SelectorData sel, bool obfuscate)
 		{
+			//ID and Element
 			if (sel.Type == SelectorType.ID)
 			{
 				string id = (obfuscate ? ob.ObfuscateID(sel.Selector) : sel.Selector);
 				WriteLine("public const string ID = \"" + id + "\";");
-				
-				string type = "HtmlElement";
-				if (sel.TagName == "input")
-					type = "HtmlInputElement";
-				if (sel.TagName == "form")
-					type = "HtmlFormElement";
-				if (sel.TagName == "select")
-					type = "HtmlSelectElement";
-				
-				WriteLine("[JsProperty(Name=\"document.getElementById(\\\"" + id + "\\\")\", NativeField=true, Global=true)]");
-				WriteLine("public static " + type + " Element { get { return null; } }");
+
+				if (options.GenerateElementProperties)
+				{
+					WriteLine("[JsProperty(Name=\"document.getElementById(\\\"" + id + "\\\")\", NativeField = true, Global = true)]");
+					WriteLine("public static " + sel.ClassName + " Element { get { return null; } }");
+				}
 			}
+			//Class
 			if (sel.Type == SelectorType.Class)
 			{
 				string classname = (obfuscate ? ob.ObfuscateClass(sel.Selector) : sel.Selector);
 				WriteLine("public const string Class = \"" + classname + "\";");
 			}
+
+			//Sub element properties
+			if (sel.Elements.Count > 0)
+			{
+				WriteLine("[JsProperty(Name=\"\", NativeField = true)]");
+				WriteLine("public ElementsClass By { get; set; }");
+				Bracket("public class ElementsClass");
+				foreach (var sub in sel.Elements)
+				{
+					//Not easily accessible, might as well use Name.Element
+					/*if (sub.Type == SelectorType.ID)
+					{
+						string id = (obfuscate ? ob.ObfuscateID(sub.Selector) : sub.Selector);
+						WriteLine("[JsProperty(Name=\"document.getElementById(\\\"" + id + "\\\")\", Global = true, NativeField = true)]");
+						WriteLine("public static " + sub.ClassName + " " + sub.PropertyName + " { get; set; }");
+					}*/
+					if (sub.Type == SelectorType.Class)
+					{
+						string classname = (obfuscate ? ob.ObfuscateClass(sub.Selector) : sub.Selector);
+						WriteLine("[JsProperty(Name=\"getElementsByClassName(\\\"" + classname + "\\\")[0]\", NativeField = true)]");
+						WriteLine("public " + sub.ClassName + " " + sub.PropertyName + " { get; set; }");
+					}
+				}
+				EndBracket();
+			}
+
 		}
 
 		public void WriteClasses(List<string> classes)

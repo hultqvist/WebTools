@@ -34,7 +34,7 @@ namespace SilentOrbit
 				if (options.InputCSS != null)
 				{
 					CssObfuscator.Obfuscate(options.InputCSS, options.OutputCSS, ob);
-					Console.WriteLine("Obfuscated: " + options.InputCSS);
+					Console.WriteLine("Obfuscated written to: " + options.OutputCSS);
 				}
 
 				ob.ExportClasses(classes);
@@ -108,22 +108,22 @@ namespace SilentOrbit
 				string ns = dir.Substring(options.WebRoot.Length);
 				ns = ns.Replace("/", ".").Trim('.');
 
-				if (ns != "" && data.ClassName == "Index")
+				if (ns != "" && data.FragmentName == "Index")
 				{
 					//Move one namespace to classname
 					string[] parts = ns.Split('.');
 					ns = string.Join(".", parts, 0, parts.Length - 1);
 
-					data.ClassName = parts[parts.Length - 1];
+					data.FragmentName = parts[parts.Length - 1];
 				}
 
 				//Prepare 
 				SelectionMerger.Merge(data);
 
-				data.ClassName += options.FileSuffix;
+				data.FragmentName += options.FileSuffix;
 
 				//Save
-				output.WriteClass(ns, data);
+				output.WriteFragment(ns, data);
 			}
 
 			string[] dirs = Directory.GetDirectories(path);

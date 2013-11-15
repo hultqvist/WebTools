@@ -29,18 +29,30 @@ namespace SilentOrbit
 		[Option("filename-property", Required = false, HelpText = "Generate properties for each file containing its name")]
 		public bool GenerateFilenameProperties { get; set; }
 
+		[Option("element-property", Required = false, HelpText = "Generate Element property for each id")]
+		public bool GenerateElementProperties { get; set; }
+
+		[Option("type-suffix", Required = false, HelpText = "Generate \"Id\" and \"Class\" suffix to generated names to avoid collision between them.")]
+		public bool GenerateTypeSuffix { get; set; }
+
 		[Option("outputCS", Required = true, HelpText = "Output path to generated .cs file")]
 		public string OutputCS { get; set; }
 
 		[Option("outputHTML", Required = false, HelpText = "Output path to modified HTML files")]
 		public string OutputHTML { get; set; }
 
+		[Option("minimize-names", Required = false, HelpText = "Generate obfuscated id/class names when not in debug mode")]
+		public bool MinimizeNames { get; set; }
 
 		[Option("inputCSS", Required = false, HelpText = "Single CSS file to be read")]
 		public string InputCSS { get; set; }
 
 		[Option("outputCSS", Required = false, HelpText = "Obfuscated CSS file to be written")]
 		public string OutputCSS { get; set; }
+
+		//Static instance
+
+		public static Options Instance;
 
 		public static Options Parse(string[] args)
 		{
@@ -56,6 +68,7 @@ namespace SilentOrbit
 			options.OutputCS = Path.GetFullPath(options.OutputCS);
 			if(options.OutputHTML != null)
 				options.OutputHTML = Path.GetFullPath(options.OutputHTML);
+			Instance = options;
 			return options;
 		}
 	}

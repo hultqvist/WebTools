@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
+using SilentOrbit.Code;
 
 namespace SilentOrbit.Extractor
 {
 	public enum SelectorType
 	{
-		ID
-,
+		ID,
 		Class
 	}
 
@@ -19,6 +19,10 @@ namespace SilentOrbit.Extractor
 		public string Selector { get; set; }
 
 		public List<SelectorData> Elements = new List<SelectorData>();
+
+		protected SelectorData()
+		{	
+		}
 
 		public void AddElement(SelectorData s)
 		{
@@ -58,7 +62,7 @@ namespace SilentOrbit.Extractor
 			return null;
 		}
 
-		public SelectorData CreateClass(string name)
+		public SelectorData CreateClass(string name, string tagName)
 		{
 			//Find existing
 			var s = GetClass(name);
@@ -67,6 +71,7 @@ namespace SilentOrbit.Extractor
         
 			//Create new
 			s = new SelectorData();
+			s.TagName = tagName;
 			s.Selector = name;
 			s.Type = SelectorType.Class;
 			Elements.Add(s);
@@ -131,10 +136,66 @@ namespace SilentOrbit.Extractor
 			}
 		}
 
+		//ClassName and PropertyName are currenlty similar, previous plans was to separate class definitions and properties by name.
+		public string ClassName
+		{
+			get
+			{
+				string className = Name.ToCamelCase(Selector);
+				//className += "Element";
+				if (Options.Instance.GenerateTypeSuffix == false)
+					return className;
+				if (Type == SelectorType.ID)
+					return "Id" + className;
+				if (Type == SelectorType.Class)
+					return "Class" + className;
+
+				throw new NotImplementedException();
+			}
+		}
+
+		//ClassName and PropertyName are currenlty similar, previous plans was to separate class definitions and properties by name.
+		public string PropertyName
+		{
+			get
+			{
+				string className = Name.ToCamelCase(Selector);
+				if (Options.Instance.GenerateTypeSuffix == false)
+					return className;
+				if (Type == SelectorType.ID)
+					return "Id" + className;
+				if (Type == SelectorType.Class)
+					return "Class" + className;
+
+				throw new NotImplementedException();
+			}
+		}
+
+		public string SkType
+		{
+			get
+			{
+				switch (TagName)
+				{
+					case "input":
+						return "HtmlInputElement";
+					case "form":
+						return "HtmlFormElement";
+					case "select":
+						return "HtmlSelectElement";
+					case null:
+						throw new ArgumentNullException("TagName can't be null");
+					default:
+						return "HtmlElement";
+				}
+			}
+		}
+
 		public override string ToString()
 		{
 			return string.Format("[{0}, {1} sub]", Selector, Elements.Count);
 		}
 	}
 }
+
 

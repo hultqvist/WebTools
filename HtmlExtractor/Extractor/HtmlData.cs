@@ -13,7 +13,7 @@ namespace SilentOrbit.Extractor
 		/// <summary>
 		/// Top Class name that we generate a partial of
 		/// </summary>
-		public string ClassName { get; set; }
+		public string FragmentName { get; set; }
 
 		public override string ToString()
 		{
