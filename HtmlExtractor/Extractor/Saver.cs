@@ -66,7 +66,7 @@ namespace SilentOrbit.Extractor
 			}*/
 
 			WriteLine("[JsType(JsMode.Json)]");
-			Bracket("public class " + sel.ClassName + " : " + sel.SkType);
+			Bracket("public class " + sel.ClassName + " : " + SharpKitClasses.FromSelectorData(sel));
 
 			//ID/Class and Selector
 			if(options.MinimizeNames)
@@ -125,12 +125,12 @@ namespace SilentOrbit.Extractor
 				foreach (var sub in sel.Elements)
 				{
 					//Not easily accessible, might as well use Name.Element
-					/*if (sub.Type == SelectorType.ID)
+					if (sub.Type == SelectorType.ID)
 					{
 						string id = (obfuscate ? ob.ObfuscateID(sub.Selector) : sub.Selector);
-						WriteLine("[JsProperty(Name=\"document.getElementById(\\\"" + id + "\\\")\", Global = true, NativeField = true)]");
-						WriteLine("public static " + sub.ClassName + " " + sub.PropertyName + " { get; set; }");
-					}*/
+						WriteLine("[JsProperty(Name=\"querySelector(\\\"#" + id + "\\\")\", NativeField = true)]");
+						WriteLine("public " + sub.ClassName + " " + sub.PropertyName + " { get; set; }");
+					}
 					if (sub.Type == SelectorType.Class)
 					{
 						string classname = (obfuscate ? ob.ObfuscateClass(sub.Selector) : sub.Selector);

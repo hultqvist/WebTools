@@ -171,26 +171,6 @@ namespace SilentOrbit.Extractor
 			}
 		}
 
-		public string SkType
-		{
-			get
-			{
-				switch (TagName)
-				{
-					case "input":
-						return "HtmlInputElement";
-					case "form":
-						return "HtmlFormElement";
-					case "select":
-						return "HtmlSelectElement";
-					case null:
-						throw new ArgumentNullException("TagName can't be null");
-					default:
-						return "HtmlElement";
-				}
-			}
-		}
-
 		public override string ToString()
 		{
 			return string.Format("[{0}, {1} sub]", Selector, Elements.Count);
