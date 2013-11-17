@@ -2,31 +2,34 @@ using System;
 
 namespace SilentOrbit.Extractor
 {
-	public class SelectionMerger
+	class SelectionBubbler
 	{
 		readonly HtmlData data;
 
-		public SelectionMerger(HtmlData data)
+		SelectionBubbler(HtmlData data)
 		{
 			this.data = data;
 		}
+
 		/// <summary>
-		/// Merge classes and ID to top level
+		/// Bubble classes and ID to top level
 		/// </summary>
-		public static void Merge(HtmlData data)
+		public static void Bubble(HtmlData data, Options options)
 		{
-			var sm = new SelectionMerger(data);
+			var sm = new SelectionBubbler(data);
 
-			sm.MergeClasses(data);
+			if(options.BubbleClass)
+				sm.BubbleClasses(data);
 
-			sm.MergeID(data);
+			if(options.BubbleID)
+				sm.BubbleID(data);
 		}
 
-		void MergeID(SelectorData parent)
+		void BubbleID(SelectorData parent)
 		{
 			foreach (var s in parent.Elements.ToArray())
 			{
-				MergeID(s);
+				BubbleID(s);
 
 				//Add IDs to top level
 				if (s.Type == SelectorType.ID)
@@ -37,11 +40,11 @@ namespace SilentOrbit.Extractor
 			}
 		}
 
-		void MergeClasses(SelectorData parent)
+		void BubbleClasses(SelectorData parent)
 		{
 			foreach (var s in parent.Elements.ToArray())
 			{
-				MergeClasses(s);
+				BubbleClasses(s);
 
 				foreach (var sub in s.Elements)
 				{

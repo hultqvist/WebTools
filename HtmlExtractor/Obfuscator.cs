@@ -29,6 +29,9 @@ namespace SilentOrbit
 			return s.ToString();
 		}
 
+		/// <summary>
+		/// Fill up the list with previously obfuscated classes.
+		/// </summary>
 		public void ExportClasses(List<string> classes)
 		{
 			foreach (var kvp in obfuscatedClass)

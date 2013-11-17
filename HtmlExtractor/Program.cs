@@ -28,6 +28,7 @@ namespace SilentOrbit
 
 			using (var output = new Saver(options, ob))
 			{
+				//Scan HTML
 				ScanDir(options, options.WebRoot, output);
 
 				//CSS obfuscation
@@ -38,8 +39,8 @@ namespace SilentOrbit
 				}
 
 				ob.ExportClasses(classes);
-
 				output.WriteClasses(classes);
+
 				Console.WriteLine("Written: " + options.OutputCS);
 			}
 
@@ -67,7 +68,7 @@ namespace SilentOrbit
 
 				HtmlData data;
 
-				//Parse HTML ID and class and write modified html at the same time
+				//Parse HTML ID and class and write minimized/obfuscated html at the same time
 				string outputPath = null;
 				if (options.OutputHTML != null)
 				{
@@ -117,8 +118,8 @@ namespace SilentOrbit
 					data.FragmentName = parts[parts.Length - 1];
 				}
 
-				//Prepare 
-				SelectionMerger.Merge(data);
+				//Prepare
+				SelectionBubbler.Bubble(data, options);
 
 				data.FragmentName += options.FileSuffix;
 
