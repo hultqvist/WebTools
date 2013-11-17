@@ -30,138 +30,254 @@ namespace SilentOrbit.Extractor
 				Bracket("namespace " + options.Namespace + "." + ns);
 
 			WriteLine("[JsType(JsMode.Json)]");
-			Bracket((options.AccessInternal ? "internal" : "public") +" partial class " + data.FragmentName);
-			WriteLine("public const string StateName = \"" + Path.GetFileNameWithoutExtension(data.FileName) + "\";");
-			if(options.GenerateFilenameProperties)
+			Bracket((options.AccessInternal ? "internal" : "public") + " partial class " + data.FragmentName);
+			//WriteLine("public const string StateName = \"" + Path.GetFileNameWithoutExtension(data.FileName) + "\";");
+			if (options.GenerateFilenameProperties)
 				WriteLine("public const string FileName = \"" + data.FileName + "\";");
 
-			foreach (var sub in data.Elements)
-				WriteElements("", "", sub);
+			WriteElements("", "", data);
 
 			EndBracket(); //class
 			EndBracket(); //namespace
 		}
 
-		public void WriteElements(string selector, string obSelector, SelectorData sel)
+		public void WriteElements(string cssSelector, string cssSelectorObfuscated, SelectorData sel)
 		{
-			string cssSelector;
-			string cssSelectorObfuscated;
+			Console.WriteLine("WriteElements: " + sel);
+			if (sel.SubID.Count + sel.SubClass.Count == 0)
+			{
+				WriteLine("//Empty " + sel.Type + " " + sel.Selector);
+				return;
+			}
+
+			//CSS selectors
 			if (sel.Type == SelectorType.ID)
 			{
 				cssSelector = "#" + sel.Selector;
 				cssSelectorObfuscated = "#" + ob.ObfuscateID(sel.Selector);
 			}
-			else if (sel.Type == SelectorType.Class)
+			if (sel.Type == SelectorType.Class)
 			{
-				cssSelector = (selector + " ." + sel.Selector).Trim();
-				cssSelectorObfuscated = (obSelector + " ." + ob.ObfuscateClass(sel.Selector)).Trim();
+				cssSelector = (cssSelector + " ." + sel.Selector).Trim();
+				cssSelectorObfuscated = (cssSelectorObfuscated + " ." + ob.ObfuscateClass(sel.Selector)).Trim();
 			}
-			else
-				throw new NotImplementedException();
 
-			/*if (sel.Elements.Count == 0)
+			//ID
+			RenderSubID(sel);
+			RenderSubElement(sel);
+			//Class
+			RenderSubClass(sel);
+
+			//Selector
+			RenderSubSelector(sel, cssSelector, cssSelectorObfuscated);
+
+			if (options.MinimizeNames)
+				WriteLine("#if DEBUG");
+			RenderIdSelectors(sel, false);
+			if (options.MinimizeNames)
 			{
-				WriteLine("public const string " + Name.ToCamelCase(sel.Selector) + " = \"" + cssSelector + "\";");
+				WriteLine("#else");
+				RenderIdSelectors(sel, true);
+				WriteLine("#endif");
+			}
+
+			//Sub element classes
+			foreach (var sub in sel.SubID)
+			{
+				if (sub.SubID.Count + sub.SubClass.Count == 0)
+					continue;
+
+				WriteLine("[JsType(JsMode.Json)]");
+				Bracket("public class " + sub.ClassName + " : " + SharpKitClasses.FromSelectorData(sub));
+				WriteElements(cssSelector, cssSelectorObfuscated, sub);
+				EndBracket();
+			}
+			foreach (var sub in sel.SubClass)
+			{
+				if (sub.SubID.Count + sub.SubClass.Count == 0)
+					continue;
+
+				WriteLine("[JsType(JsMode.Json)]");
+				Bracket("public class " + sub.ClassName + " : " + SharpKitClasses.FromSelectorData(sub));
+				WriteElements(cssSelector, cssSelectorObfuscated, sub);
+				EndBracket();
+			}
+		}
+
+		void RenderSubID(SelectorData sel)
+		{
+			if (sel.SubID.Count == 0)
 				return;
-			}*/
 
 			WriteLine("[JsType(JsMode.Json)]");
-			Bracket("public class " + sel.ClassName + " : " + SharpKitClasses.FromSelectorData(sel));
-
-			//ID/Class and Selector
-			if(options.MinimizeNames)
+			Bracket("public static class ID");
+			if (options.MinimizeNames)
 				WriteLine("#if DEBUG");
-			
-			WriteLine("public const string Selector = \"" + cssSelector + "\";");
-			RenderIdSelectors(sel, false);
+			foreach (var i in sel.SubID)
+				WriteLine("public const string " + i.PropertyName + " = \"" + i.Selector + "\";");
+			if (options.MinimizeNames)
+			{
+				WriteLine("#else");
+				foreach (var i in sel.SubID)
+					WriteLine("public const string " + i.PropertyName + " = \"" + ob.ObfuscateID(i.Selector) + "\";");
+				WriteLine("#endif");
+			}
+			EndBracket();
+		}
 
-			//WriteLine("[JsField(Name=\"querySelector(\\\"" + cssSelector + "\\\")\")]");
-			//WriteLine("public string Query;");
+		void RenderSubElement(SelectorData sel)
+		{
+			if (!options.GenerateElementProperties)
+				return;
+			if (sel.SubID.Count == 0)
+				return;
+
+			WriteLine("[JsType(JsMode.Json)]");
+			Bracket("public static class ElementById");
+			if (options.MinimizeNames)
+				WriteLine("#if DEBUG");
+			foreach (var i in sel.SubID)
+			{
+				WriteLine("[JsProperty(Name=\"document.getElementById(\\\"" + i.Selector + "\\\")\", NativeField = true, Global = true)]");
+				WriteLine("public static " + i.ClassName + " " + i.PropertyName + " { get { return null; } }");
+			}
+			if (options.MinimizeNames)
+			{
+				WriteLine("#else");
+				foreach (var i in sel.SubID)
+				{
+					WriteLine("[JsProperty(Name=\"document.getElementById(\\\"" + ob.ObfuscateID(i.Selector) + "\\\")\", NativeField = true, Global = true)]");
+					WriteLine("public static " + i.ClassName + " " + i.PropertyName + " { get { return null; } }");
+				}
+				WriteLine("#endif");
+			}
+			EndBracket();
+		}
+
+		void RenderSubClass(SelectorData sel)
+		{
+			if (sel.SubClass.Count == 0)
+				return;
+
+			WriteLine("[JsType(JsMode.Json)]");
+			Bracket("public static class Class");
+			if (options.MinimizeNames)
+				WriteLine("#if DEBUG");
+			foreach (var i in sel.SubClass)
+				WriteLine("public const string " + i.PropertyName + " = \"" + i.Selector + "\";");
+			if (options.MinimizeNames)
+			{
+				WriteLine("#else");
+				foreach (var i in sel.SubClass)
+					WriteLine("public const string " + i.PropertyName + " = \"" + ob.ObfuscateClass(i.Selector) + "\";");
+				WriteLine("#endif");
+			}
+			EndBracket();
+		}
+
+		void RenderSubSelector(SelectorData sel, string selector, string obSelector)
+		{
+			if (sel.SubClass.Count + sel.SubID.Count == 0)
+				return;
+
+			WriteLine("[JsType(JsMode.Json)]");
+			Bracket("public static class Selector");
+			if (options.MinimizeNames)
+				WriteLine("#if DEBUG");
+
+			foreach (var i in sel.SubID)
+				WriteLine("public const string " + i.PropertyName + " = \"#" + i.Selector + "\";");
+			foreach (var i in sel.SubClass)
+				WriteLine("public const string " + i.PropertyName + " = \"" + (selector + " ." + i.Selector).Trim() + "\";");
 
 			if (options.MinimizeNames)
 			{
 				WriteLine("#else");
 
-				WriteLine("public const string Selector = \"" + cssSelectorObfuscated + "\";");
-				RenderIdSelectors(sel, true);
-			
+				foreach (var i in sel.SubID)
+					WriteLine("public const string " + i.PropertyName + " = \"#" + ob.ObfuscateID(i.Selector) + "\";");
+				foreach (var i in sel.SubClass)
+					WriteLine("public const string " + i.PropertyName + " = \"" + (obSelector + " ." + ob.ObfuscateClass(i.Selector)).Trim() + "\";");
+
 				WriteLine("#endif");
 			}
-
-			//Sub element classes
-			foreach (var sub in sel.Elements)
-				WriteElements(cssSelector, cssSelectorObfuscated, sub);
-
 			EndBracket();
 		}
 
 		void RenderIdSelectors(SelectorData sel, bool obfuscate)
 		{
-			//ID and Element
-			if (sel.Type == SelectorType.ID)
-			{
-				string id = (obfuscate ? ob.ObfuscateID(sel.Selector) : sel.Selector);
-				WriteLine("public const string ID = \"" + id + "\";");
-
-				if (options.GenerateElementProperties)
-				{
-					WriteLine("[JsProperty(Name=\"document.getElementById(\\\"" + id + "\\\")\", NativeField = true, Global = true)]");
-					WriteLine("public static " + sel.ClassName + " Element { get { return null; } }");
-				}
-			}
-			//Class
-			if (sel.Type == SelectorType.Class)
-			{
-				string classname = (obfuscate ? ob.ObfuscateClass(sel.Selector) : sel.Selector);
-				WriteLine("public const string Class = \"" + classname + "\";");
-			}
+			if (sel.SubID.Count + sel.SubClass.Count == 0)
+				return;
 
 			//Sub element properties
-			if (sel.Elements.Count > 0)
+			WriteLine("[JsProperty(Name=\"\", NativeField = true)]");
+			WriteLine("public ElementsClass By { get; set; }");
+			WriteLine("[JsType(JsMode.Json)]");
+			Bracket("public class ElementsClass");
+			foreach (var sub in sel.SubID)
 			{
-				WriteLine("[JsProperty(Name=\"\", NativeField = true)]");
-				WriteLine("public ElementsClass By { get; set; }");
-				Bracket("public class ElementsClass");
-				foreach (var sub in sel.Elements)
-				{
-					//Not easily accessible, might as well use Name.Element
-					if (sub.Type == SelectorType.ID)
-					{
-						string id = (obfuscate ? ob.ObfuscateID(sub.Selector) : sub.Selector);
-						WriteLine("[JsProperty(Name=\"querySelector(\\\"#" + id + "\\\")\", NativeField = true)]");
-						WriteLine("public " + sub.ClassName + " " + sub.PropertyName + " { get; set; }");
-					}
-					if (sub.Type == SelectorType.Class)
-					{
-						string classname = (obfuscate ? ob.ObfuscateClass(sub.Selector) : sub.Selector);
-						WriteLine("[JsProperty(Name=\"getElementsByClassName(\\\"" + classname + "\\\")[0]\", NativeField = true)]");
-						WriteLine("public " + sub.ClassName + " " + sub.PropertyName + " { get; set; }");
-					}
-				}
-				EndBracket();
+				string id = (obfuscate ? ob.ObfuscateID(sub.Selector) : sub.Selector);
+				WriteLine("[JsProperty(Name=\"querySelector(\\\"#" + id + "\\\")\", NativeField = true)]");
+				WriteLine("public " + sub.ClassName + " " + sub.PropertyName + " { get; set; }");
 			}
-
+			foreach (var sub in sel.SubClass)
+			{
+				string classname = (obfuscate ? ob.ObfuscateClass(sub.Selector) : sub.Selector);
+				WriteLine("[JsProperty(Name=\"getElementsByClassName(\\\"" + classname + "\\\")[0]\", NativeField = true)]");
+				WriteLine("public " + sub.ClassName + " " + sub.PropertyName + " { get; set; }");
+			}
+			EndBracket();
 		}
 
-		public void WriteClasses(List<string> classes)
+		public void WriteClasses(List<string> classes, Options options)
 		{
 			WriteLine("[JsType(JsMode.Json)]");
 			Bracket((options.AccessInternal ? "internal" : "public") + " static class Classes");
+			if (options.MinimizeNames)
+				WriteLine("#if DEBUG");
 
 			foreach (string c in classes)
 			{
 				string cc = Name.ToCamelCase(c);
-				string co = ob.ObfuscateClass(c);
-
-				WriteLine("#if DEBUG");
-				WriteLine("public const string " + cc + "Selector = \"." + c + "\";");
-				WriteLine("public const string " + cc + "Class = \"" + c + "\";");
+				WriteLine("public const string " + cc + " = \"" + c + "\";");
+			}
+			if (options.MinimizeNames)
+			{
 				WriteLine("#else");
-				WriteLine("public const string " + cc + "Selector = \"." + co + "\";");
-				WriteLine("public const string " + cc + "Class = \"" + co + "\";");
+				foreach (string c in classes)
+				{
+					string cc = Name.ToCamelCase(c);
+					string co = ob.ObfuscateClass(c);
+					WriteLine("public const string " + cc + " = \"" + co + "\";");
+				}
 				WriteLine("#endif");
 			}
+			EndBracket();
+		}
 
+		public void WriteSelectors(List<string> classes, Options options)
+		{
+			WriteLine("[JsType(JsMode.Json)]");
+			Bracket((options.AccessInternal ? "internal" : "public") + " static class Selectors");
+			if (options.MinimizeNames)
+				WriteLine("#if DEBUG");
+
+			foreach (string c in classes)
+			{
+				string cc = Name.ToCamelCase(c);
+				WriteLine("public const string " + cc + " = \"." + c + "\";");
+			}
+			if (options.MinimizeNames)
+			{
+				WriteLine("#else");
+				foreach (string c in classes)
+				{
+					string cc = Name.ToCamelCase(c);
+					string co = ob.ObfuscateClass(c);
+					WriteLine("public const string " + cc + " = \"." + co + "\";");
+				}
+				WriteLine("#endif");
+			}
 			EndBracket();
 		}
 	}

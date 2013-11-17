@@ -18,39 +18,49 @@ namespace SilentOrbit.Extractor
 		{
 			var sm = new SelectionBubbler(data);
 
-			if(options.BubbleClass)
+			if (options.BubbleClass)
 				sm.BubbleClasses(data);
 
-			if(options.BubbleID)
+			if (options.BubbleID)
 				sm.BubbleID(data);
 		}
 
 		void BubbleID(SelectorData parent)
 		{
-			foreach (var s in parent.Elements.ToArray())
+			foreach (var s in parent.SubClass.ToArray())
+				BubbleID(s);
+
+			foreach (var s in parent.SubID.ToArray())
 			{
 				BubbleID(s);
 
 				//Add IDs to top level
-				if (s.Type == SelectorType.ID)
-				{
-					if (data.Elements.Contains(s) == false)
-						data.AddElement(s);
-				}
+				if (data.SubID.Contains(s) == false)
+					data.AddElement(s);
 			}
 		}
 
 		void BubbleClasses(SelectorData parent)
 		{
-			foreach (var s in parent.Elements.ToArray())
+			foreach (var s in parent.SubID.ToArray())
 			{
 				BubbleClasses(s);
 
-				foreach (var sub in s.Elements)
+				foreach (var sub in s.SubClass)
 				{
-					if (sub.Type != SelectorType.Class)
+					if (parent.Type == SelectorType.Class && parent.Selector == sub.Selector)
 						continue;
 
+					parent.AddElement(sub);
+				}
+			}
+
+			foreach (var s in parent.SubClass.ToArray())
+			{
+				BubbleClasses(s);
+
+				foreach (var sub in s.SubClass)
+				{
 					if (parent.Type == SelectorType.Class && parent.Selector == sub.Selector)
 						continue;
 

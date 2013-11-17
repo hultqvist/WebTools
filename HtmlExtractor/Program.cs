@@ -38,8 +38,12 @@ namespace SilentOrbit
 					Console.WriteLine("Obfuscated written to: " + options.OutputCSS);
 				}
 
-				ob.ExportClasses(classes);
-				output.WriteClasses(classes);
+				if (options.GenerateGlobalClasses)
+				{
+					ob.ExportClasses(classes);
+					output.WriteClasses(classes, options);
+					output.WriteSelectors(classes, options);
+				}
 
 				Console.WriteLine("Written: " + options.OutputCS);
 			}

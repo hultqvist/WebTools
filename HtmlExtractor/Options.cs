@@ -51,6 +51,12 @@ namespace SilentOrbit
 		public bool GenerateTypeSuffix { get; set; }
 
 		/// <summary>
+		/// Generate one class Classes containing all parsed classes
+		/// </summary>
+		[Option("generate-classes", Required = false, HelpText = "Generate one class Classes containing all parsed classes")]
+		public bool GenerateGlobalClasses { get; set; }
+
+		/// <summary>
 		/// Allow ID to bubble to the top making them available earlier in the tree.
 		/// </summary>
 		[Option("bubble-id", Required = false, HelpText = "Allow ID to bubble to the top making them available earlier in the tree.")]
