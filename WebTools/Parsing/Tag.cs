@@ -43,6 +43,8 @@ namespace SilentOrbit.Parsing
 			this.Namespace = ns;
 			this.Name = name;
 			this.Parent = parent;
+			this.After = ""; //After is never null
+			//this.Value; //Value is null in self closed tags
 
 			if (parent == null)
 				this.NS = new Dictionary<string, TagNamespace>();
@@ -81,7 +83,21 @@ namespace SilentOrbit.Parsing
 			return s.ToString();
 		}
 
+		/// <summary>
+		/// Render tag and its content
+		/// </summary>
 		public string Render()
+		{
+			StringBuilder s = new StringBuilder();
+			RenderTag(this, s);
+			return s.ToString();
+		}
+
+		/// <summary>
+		/// Render what's inside the tag, exclude the tag itself
+		/// </summary>
+		/// <returns>The content.</returns>
+		public string RenderContent()
 		{
 			if (Children.Count == 0)
 				return Value ?? "";
@@ -89,11 +105,11 @@ namespace SilentOrbit.Parsing
 			StringBuilder s = new StringBuilder();
 			s.Append(Value);
 			foreach (var c in Children)
-				Render(c, s);
+				RenderTag(c, s);
 			return s.ToString();
 		}
 
-		static void Render(Tag t, StringBuilder s)
+		static void RenderTag(Tag t, StringBuilder s)
 		{
 			s.Append("<");
 			s.Append(t.Name);
@@ -111,7 +127,7 @@ namespace SilentOrbit.Parsing
 				s.Append(t.Value);
 			}
 			foreach (var c in t.Children)
-				Render(c, s);
+				RenderTag(c, s);
 			s.Append("</" + t.Name + ">");
 			s.Append(t.After);
 		}

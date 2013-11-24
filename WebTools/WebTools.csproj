@@ -50,6 +50,7 @@
     <Compile Include="Parsing\ITagOutput.cs" />
     <Compile Include="Parsing\NullOutput.cs" />
     <Compile Include="Parsing\NestedTagOutput.cs" />
+    <Compile Include="Parsing\DocumentParser.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

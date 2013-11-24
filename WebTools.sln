@@ -11,6 +11,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebTools", "WebTools\WebToo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ARSoft.Tools.Net", "DnsSharp\ARSoft.Tools.Net\ARSoft.Tools.Net.csproj", "{65BFA748-C640-49B0-B506-34BBB165233A}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{D82B28C2-F600-4359-ACC0-E1AF1A855B0B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebToolsTest", "Test\WebToolsTest\WebToolsTest.csproj", "{BC36B9A7-7391-4871-A16E-F578CF08E9F1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,6 +33,10 @@ Global
 		{93B3A9EC-4FE6-4FEB-8ACA-44E1A34A23B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{93B3A9EC-4FE6-4FEB-8ACA-44E1A34A23B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{93B3A9EC-4FE6-4FEB-8ACA-44E1A34A23B3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BC36B9A7-7391-4871-A16E-F578CF08E9F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC36B9A7-7391-4871-A16E-F578CF08E9F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC36B9A7-7391-4871-A16E-F578CF08E9F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC36B9A7-7391-4871-A16E-F578CF08E9F1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E1BD3C65-49C3-49E7-BABA-C60980CB3F20}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E1BD3C65-49C3-49E7-BABA-C60980CB3F20}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E1BD3C65-49C3-49E7-BABA-C60980CB3F20}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -37,6 +45,9 @@ Global
 		{FFFA67D7-6E0B-4C5C-8B3C-9DDED536AC4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FFFA67D7-6E0B-4C5C-8B3C-9DDED536AC4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FFFA67D7-6E0B-4C5C-8B3C-9DDED536AC4A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{BC36B9A7-7391-4871-A16E-F578CF08E9F1} = {D82B28C2-F600-4359-ACC0-E1AF1A855B0B}
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = HtmlExtractor\HtmlExtractor.csproj
