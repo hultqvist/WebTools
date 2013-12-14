@@ -43,7 +43,7 @@ namespace SilentOrbit.Extractor
 
 		public void WriteElements(string cssSelector, string cssSelectorObfuscated, SelectorData sel)
 		{
-			Console.WriteLine("WriteElements: " + sel);
+			//Console.WriteLine("WriteElements: " + sel);
 			if (sel.SubID.Count + sel.SubClass.Count == 0)
 			{
 				WriteLine("//Empty " + sel.Type + " " + sel.Selector);
