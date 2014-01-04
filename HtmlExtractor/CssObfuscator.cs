@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Collections.Generic;
 
 namespace SilentOrbit
 {
@@ -150,36 +151,50 @@ namespace SilentOrbit
 			selector = selector.Trim(wsp);
 
 			//Obfuscate selector
-			string[] sel = selector.Split(' ', '>', '*');
-			for (int n = 0; n < sel.Length; n++)
+			var sel = new List<string>(selector.Split(' ', '>', '*'));
+			for (int n = 0; n < sel.Count; n++)
 			{
 				string s = sel[n].Trim(wsp);
 				int colon = s.IndexOf(':');
 				if (colon > 0)
 					s = s.Substring(0, colon);
+				//Detect ".foo.bar" and split, doesn't work for .foo.bar.baz
+				int pos = s.LastIndexOf('.');
+				if (pos > 0)
+				{
+					//TODO: split on '.' and obfuscate each part
+					string first = s.Substring(0, pos);
+					string second = s.Substring(pos);
+					sel[n] = ObfuscateSelectorPart(first) + ObfuscateSelectorPart(second);
+					continue;
+				}
 
-				if (s.StartsWith("#"))
-				{
-					var o = ob.ObfuscateID(s.Substring(1));
-					if (o == null)
-						Console.Error.WriteLine("Warning, css id not used in html: " + s);
-					else
-						sel[n] = "#" + o;
-					continue;
-				}
-				if (s.StartsWith("."))
-				{
-					var o = ob.ObfuscateClass(s.Substring(1));
-					if (o == null)
-						Console.Error.WriteLine("Warning, css class not used in html: " + s);
-					else
-						sel[n] = "." + o;
-					continue;
-				}
+				sel[n] = ObfuscateSelectorPart(s);
 				if (s.StartsWith("@"))
 					break;
 			}
 			return string.Join(" ", sel);
+		}
+
+		string ObfuscateSelectorPart(string s)
+		{
+			if (s.StartsWith("#"))
+			{
+				var o = ob.ObfuscateID(s.Substring(1));
+				if (o == null)
+					Console.Error.WriteLine("Warning, css id not used in html: " + s);
+				else
+					return "#" + o;
+			}
+			if (s.StartsWith("."))
+			{
+				var o = ob.ObfuscateClass(s.Substring(1));
+				if (o == null)
+					Console.Error.WriteLine("Warning, css class not used in html: " + s);
+				else
+					return "." + o;
+			}
+			return s;
 		}
 	}
 }
