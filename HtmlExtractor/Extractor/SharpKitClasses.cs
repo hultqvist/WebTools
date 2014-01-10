@@ -133,7 +133,7 @@ namespace SilentOrbit.Extractor
 					return "HtmlTableSectionElement";
 				case "template":
 					return "HtmlTemplateElement";
-				case "textare":
+				case "textarea":
 					return "HtmlTextAreaElement";
 				case "title":
 					return "HtmlTitleElement";
