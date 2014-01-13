@@ -22,6 +22,22 @@ namespace SilentOrbit
 
 		public static int Main(string[] args)
 		{
+			#if DEBUG
+			args = new string[]{
+				"--htmlroot", "TestData",
+				"--namespace", "Example",
+				"--outputCS", "Generated.cs",
+				"--element-property",
+				"--generate-classes",
+				"--bubble-id",
+				"--bubble-class",
+				"--outputHTML", "Output",
+				"--minimize-names",
+				"--inputCSS", Path.Combine("TestData", "style.css"),
+				"--outputCSS", Path.Combine("Output", "style.css")
+			};
+			#endif
+
 			var options = Options.Parse(args);
 			if (options == null)
 				return -1;

@@ -21,6 +21,18 @@ namespace SilentOrbit
 
 		public static void Obfuscate(string input, string output, Obfuscator ob)
 		{
+			#if DEBUG
+
+			var p = new ExCSS.Parser();
+			var stylesheet = p.Parse(File.ReadAllText(input));
+			foreach(var sr in stylesheet.Rulesets)
+			{
+				Console.WriteLine(sr);
+			}
+			string css = stylesheet.ToString();
+
+			#endif
+
 			using (TextReader reader = new StreamReader(input, Encoding.UTF8))
 			{
 				TextWriter writer = null;

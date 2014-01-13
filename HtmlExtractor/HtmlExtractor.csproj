@@ -53,6 +53,7 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Folder Include="Extractor\" />
+    <Folder Include="TestData\" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>
@@ -79,5 +80,17 @@
       <Project>{93B3A9EC-4FE6-4FEB-8ACA-44E1A34A23B3}</Project>
       <Name>WebTools</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ExCSS\ExCSS\ExCSS.csproj">
+      <Project>{26881075-3F64-4825-A6B5-EAA0D5419D20}</Project>
+      <Name>ExCSS</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="TestData\style.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestData\index.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 </Project>
