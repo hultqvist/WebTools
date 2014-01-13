@@ -7,3 +7,6 @@
 [submodule "DnsSharp"]
 	path = DnsSharp
 	url = git@github.com:hultqvist/DnsSharp.git
+[submodule "ExCSS"]
+	path = ExCSS
+	url = git@github.com:hultqvist/ExCSS.git
