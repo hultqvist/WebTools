@@ -48,7 +48,7 @@
     <Compile Include="Extractor\HtmlObfuscator.cs" />
     <Compile Include="CssObfuscator.cs" />
     <Compile Include="Extractor\SharpKitClasses.cs" />
-    <Compile Include="Extractor\SelectionBubbler.cs" />
+    <Compile Include="Extractor\SelectorBubbler.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

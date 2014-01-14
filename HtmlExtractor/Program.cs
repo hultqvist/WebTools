@@ -139,7 +139,7 @@ namespace SilentOrbit
 				}
 
 				//Prepare
-				SelectionBubbler.Bubble(data, options);
+				SelectorBubbler.Bubble(data, options);
 
 				data.FragmentName += options.FileSuffix;
 

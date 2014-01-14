@@ -2,11 +2,11 @@ using System;
 
 namespace SilentOrbit.Extractor
 {
-	class SelectionBubbler
+	class SelectorBubbler
 	{
 		readonly HtmlData data;
 
-		SelectionBubbler(HtmlData data)
+		SelectorBubbler(HtmlData data)
 		{
 			this.data = data;
 		}
@@ -16,7 +16,7 @@ namespace SilentOrbit.Extractor
 		/// </summary>
 		public static void Bubble(HtmlData data, Options options)
 		{
-			var sm = new SelectionBubbler(data);
+			var sm = new SelectorBubbler(data);
 
 			if (options.BubbleClass)
 				sm.BubbleClasses(data);
