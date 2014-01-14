@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using SilentOrbit.Code;
 
-namespace SilentOrbit.Extractor
+namespace SilentOrbit.Data
 {
 	public enum SelectorType
 	{

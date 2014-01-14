@@ -1,8 +1,9 @@
 using System;
-using SilentOrbit.Parsing;
-using SilentOrbit.Code;
-using System.IO;
 using System.Collections.Generic;
+using System.IO;
+using SilentOrbit.Code;
+using SilentOrbit.Parsing;
+using SilentOrbit.Data;
 
 namespace SilentOrbit.Extractor
 {

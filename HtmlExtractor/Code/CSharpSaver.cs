@@ -1,17 +1,22 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using System.Collections.Generic;
 using SilentOrbit.Code;
+using SilentOrbit.Data;
+using SilentOrbit.Extractor;
 
-namespace SilentOrbit.Extractor
+namespace SilentOrbit.Code
 {
-	class Saver : CodeWriter
+	/// <summary>
+	/// Generates the C# code based on the parsed HTML and CSS
+	/// </summary>
+	class CSharpSaver : CodeWriter
 	{
 		readonly Options options;
 		readonly Obfuscator ob;
 
-		public Saver(Options options, Obfuscator ob) : base(options.OutputCS)
+		public CSharpSaver(Options options, Obfuscator ob) : base(options.OutputCS)
 		{
 			this.options = options;
 			this.ob = ob;

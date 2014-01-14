@@ -1,6 +1,7 @@
 using System;
+using SilentOrbit.Extractor;
 
-namespace SilentOrbit.Extractor
+namespace SilentOrbit.Data
 {
 	class SelectorBubbler
 	{

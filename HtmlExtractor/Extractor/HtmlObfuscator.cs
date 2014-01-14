@@ -1,5 +1,6 @@
 using System;
 using SilentOrbit.Parsing;
+using SilentOrbit.Data;
 
 namespace SilentOrbit.Extractor
 {

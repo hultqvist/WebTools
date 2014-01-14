@@ -1,8 +1,10 @@
 using System;
+using SilentOrbit.Data;
+using SilentOrbit.Extractor;
 
-namespace SilentOrbit.Extractor
+namespace SilentOrbit.Code
 {
-	public class SharpKitClasses
+	public static class SharpKitClasses
 	{
 		public static string FromSelectorData(SelectorData sel)
 		{
