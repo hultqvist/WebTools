@@ -33,7 +33,7 @@ namespace SilentOrbit.Css
 			}
 		}
 
-		static char[] wsp = new char[] { ' ', '\t', '\r', '\n' };
+		//static char[] wsp = new char[] { ' ', '\t', '\r', '\n' };
 
 		void Obfuscate()
 		{
@@ -43,8 +43,13 @@ namespace SilentOrbit.Css
 					ObfuscateSelectors(r);
 			}
 
-			foreach (StyleRule r in css.Rulesets)
+			foreach (RuleSet rs in css.Rulesets)
+			{
+				var r = rs as StyleRule;
+				if (r == null)
+					continue;
 				ObfuscateSelectors(r);
+			}
 		}
 
 		void ObfuscateSelectors(StyleRule rule)
