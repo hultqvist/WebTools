@@ -21,7 +21,7 @@ namespace SilentOrbit.Test.Parsing
 </div>
 ";
 			var doc = DocumentParser.Parse(html);
-			Assert.NotNull(doc);
+			Assert.IsNotNull(doc);
 			Tag t;
 
 			t = doc;
