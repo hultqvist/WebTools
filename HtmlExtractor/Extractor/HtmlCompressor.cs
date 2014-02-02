@@ -1,4 +1,5 @@
 using System;
+using System.Text.RegularExpressions;
 using System.IO;
 using SilentOrbit.Parsing;
 
@@ -18,6 +19,8 @@ namespace SilentOrbit.Extractor
 
 		public void ParsedAttribute(Tag tag, TagNamespace ns, string key, string val)
 		{
+			if (string.IsNullOrWhiteSpace(val))
+				return;
 			output.ParsedAttribute(tag, ns, key, val);
 		}
 
@@ -31,9 +34,15 @@ namespace SilentOrbit.Extractor
 			output.ParsedClosingTag(tag);
 		}
 
+		/// <summary>
+		/// Trim all but space
+		/// </summary>
+		static Regex trim = new Regex(@"[\t\n\r]+");
+
 		public void ParsedText(Tag tag, string decodedText)
 		{
-			output.ParsedText(tag, decodedText.Trim(' ', '\t', '\r', '\n'));
+			string trimmed = trim.Replace(decodedText, "");
+			output.ParsedText(tag, trimmed);
 		}
 
 		public void ParseError(string message)
