@@ -37,18 +37,26 @@ namespace SilentOrbit.Css
 
 		void Obfuscate()
 		{
-			foreach (MediaRule m in css.MediaDirectives)
-			{
-				foreach (StyleRule r in m.Declarations)
-					ObfuscateSelectors(r);
-			}
+			Obfuscate(css.Rules);
+		}
 
-			foreach (RuleSet rs in css.Rulesets)
+		void Obfuscate(List<RuleSet> list)
+		{
+			foreach (RuleSet rs in list)
 			{
-				var r = rs as StyleRule;
-				if (r == null)
-					continue;
-				ObfuscateSelectors(r);
+				#if DEBUG
+				if(rs is StyleRule && rs is AggregateRule)
+					throw new NotImplementedException();
+				#endif
+				if (rs is StyleRule)
+				{
+					ObfuscateSelectors((StyleRule)rs);
+				}
+				if (rs is AggregateRule)
+				{
+					var ar = (AggregateRule)rs;
+					Obfuscate(ar.RuleSets);
+				}
 			}
 		}
 
@@ -57,7 +65,7 @@ namespace SilentOrbit.Css
 			rule.Selector = ObfuscateSelectors(rule.Selector);
 		}
 
-		SimpleSelector ObfuscateSelectors(SimpleSelector selector)
+		BaseSelector ObfuscateSelectors(BaseSelector selector)
 		{
 			Type ruleType = selector.GetType();
 
@@ -81,9 +89,9 @@ namespace SilentOrbit.Css
 
 			if (ruleType == typeof(AggregateSelectorList))
 			{
-				var obf = new AggregateSelectorList();
 				var cs = (AggregateSelectorList)selector;
-				foreach (SimpleSelector sel in cs)
+				var obf = new AggregateSelectorList(cs.Delimiter);
+				foreach (BaseSelector sel in cs)
 					obf.AppendSelector(ObfuscateSelectors(sel));
 				return obf;
 			}
@@ -92,12 +100,12 @@ namespace SilentOrbit.Css
 			{
 				var obf = new MultipleSelectorList();
 				var cs = (MultipleSelectorList)selector;
-				foreach (SimpleSelector sel in cs)
+				foreach (BaseSelector sel in cs)
 					obf.AppendSelector(ObfuscateSelectors(sel));
 				return obf;
 			}
 
-			throw new NotImplementedException("Type: " + ruleType);
+			return selector;
 		}
 
 		string ObfuscateSelectorPart(string s)

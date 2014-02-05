@@ -17,8 +17,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebToolsTest", "Test\WebToo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExCSS", "ExCSS\ExCSS\ExCSS.csproj", "{26881075-3F64-4825-A6B5-EAA0D5419D20}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Antlr3.Runtime", "ExCSS\antlr3\runtime\CSharp3\Sources\Antlr3.Runtime\Antlr3.Runtime.csproj", "{8FDC0A87-9005-4D5A-AB75-E55CEB575559}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,10 +31,6 @@ Global
 		{65BFA748-C640-49B0-B506-34BBB165233A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{65BFA748-C640-49B0-B506-34BBB165233A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{65BFA748-C640-49B0-B506-34BBB165233A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8FDC0A87-9005-4D5A-AB75-E55CEB575559}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8FDC0A87-9005-4D5A-AB75-E55CEB575559}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8FDC0A87-9005-4D5A-AB75-E55CEB575559}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8FDC0A87-9005-4D5A-AB75-E55CEB575559}.Release|Any CPU.Build.0 = Release|Any CPU
 		{92D09547-0A11-49EB-9550-CCCA9F13B6D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{92D09547-0A11-49EB-9550-CCCA9F13B6D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{92D09547-0A11-49EB-9550-CCCA9F13B6D0}.Release|Any CPU.ActiveCfg = Release|Any CPU

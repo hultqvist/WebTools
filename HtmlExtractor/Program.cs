@@ -26,6 +26,22 @@ namespace SilentOrbit
 		public static int Main(string[] args)
 		{
 			#if DEBUGx
+			string test = @"@media all and (min-width:40em) {
+	html{
+		background:rgba(0, 0, 0, 0.5);
+		font-family:Georgia,serif;
+		box-shadow:3px 0 1px -1px #DDD,-3px 0 1px -1px #DDD;
+	}
+}";
+			var p = new ExCSS.Parser();
+			var style = p.Parse(test);
+			string css = style.ToString(true, 0);
+			if(css == test)
+				Console.WriteLine("ok");
+			else
+				Console.WriteLine("fail");
+			#endif
+			#if DEBUGx
 			args = new string[]{
 				"--htmlroot", "TestData",
 				"--namespace", "Example",
