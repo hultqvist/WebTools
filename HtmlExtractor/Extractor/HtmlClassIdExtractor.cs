@@ -47,7 +47,7 @@ namespace SilentOrbit.Extractor
 		{
 			//Get them before they get obfuscated
 			string id = tag.Attribute("id");
-			var cs = tag.Attribute("class");
+			string cs = tag.Attribute("class");
 
 			//Ofuscation being done here
 			output.ParsedOpeningTag(tag);

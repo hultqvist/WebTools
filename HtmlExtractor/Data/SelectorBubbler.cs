@@ -28,16 +28,24 @@ namespace SilentOrbit.Data
 
 		void BubbleID(SelectorData parent)
 		{
-			foreach (var s in parent.SubClass.ToArray())
-				BubbleID(s);
-
 			foreach (var s in parent.SubID.ToArray())
 			{
-				BubbleID(s);
-
 				//Add IDs to top level
 				if (data.SubID.Contains(s) == false)
 					data.AddElement(s);
+
+				BubbleID(s);
+
+				foreach (var sub in s.SubID)
+					parent.AddElement(sub);
+			}
+
+			foreach (var s in parent.SubClass.ToArray())
+			{
+				BubbleID(s);
+
+				foreach (var sub in s.SubID)
+					parent.AddElement(sub);
 			}
 		}
 
