@@ -51,6 +51,7 @@
     <Compile Include="Parsing\NullOutput.cs" />
     <Compile Include="Parsing\NestedTagOutput.cs" />
     <Compile Include="Parsing\DocumentParser.cs" />
+    <Compile Include="Parsing\HtmlWriter.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

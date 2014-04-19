@@ -13,7 +13,7 @@ namespace SilentOrbit.Parsing
 
         void ParsedClosingTag(Tag tag);
 
-        void ParsedText(Tag parent, string decodedText);
+        void ParsedText(string decodedText);
 
         void ParseError(string message);
     }
