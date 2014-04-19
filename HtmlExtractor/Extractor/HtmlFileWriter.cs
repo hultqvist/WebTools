@@ -9,11 +9,11 @@ namespace SilentOrbit.Extractor
     /// Writes the parsed html onto another file.
     /// By overriding this one slight modifications can be done to the html before it is being written
     /// </summary>
-    public class HtmlWriter : ITagOutput, IDisposable
+	public class HtmlFileWriter : ITagOutput, IDisposable
     {
         readonly TextWriter writer;
 
-		public HtmlWriter(string path)
+		public HtmlFileWriter(string path)
         {
             this.writer = new StreamWriter(File.Open(path, FileMode.Create));
 		}
@@ -51,7 +51,7 @@ namespace SilentOrbit.Extractor
             writer.Write("</" + tag.Name + ">");
         }
 
-        public void ParsedText(Tag parent, string decodedText)
+        public void ParsedText(string decodedText)
         {
             writer.Write(HttpUtility.HtmlEncode(decodedText));
         }

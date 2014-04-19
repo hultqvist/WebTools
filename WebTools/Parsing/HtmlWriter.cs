@@ -9,41 +9,57 @@ namespace SilentOrbit.Parsing
 	/// </summary>
 	public class HtmlWriter : ITagOutput
 	{
-		readonly TextWriter writer;
+		public readonly TextWriter Writer;
+
+		/// <summary>
+		/// Write parsing errors as HTML comments
+		/// </summary>
+		public bool WriteErrors { get; set; }
+
+		public HtmlWriter()
+		{
+			this.Writer = new StringWriter();
+		}
 
 		public HtmlWriter(TextWriter writer)
 		{
-			this.writer = writer;
+			this.Writer = writer;
+		}
+
+		public override string ToString()
+		{
+			return Writer.ToString();
 		}
 
 		public void ParsedAttribute(Tag tag, TagNamespace ns, string key, string val)
 		{
-			//Nothing done here, rendered in ParsedOpeningTag
+			tag.Attributes.Add(key, val);
 		}
 
 		public void ParsedOpeningTag(Tag tag)
 		{
-			writer.Write("<" + tag.Name);
+			Writer.Write("<" + tag.Name);
 			foreach (var a in tag.Attributes)
-				writer.Write(" " + a.Key + "=\"" + HttpUtility.HtmlEncode(a.Value) + "\"");
+				Writer.Write(" " + a.Key + "=\"" + HttpUtility.HtmlEncode(a.Value) + "\"");
 			if (tag.SelfClosed)
-				writer.Write("/");
-			writer.Write(">");
+				Writer.Write("/");
+			Writer.Write(">");
 		}
 
 		public void ParsedClosingTag(Tag tag)
 		{
-			writer.Write("</" + tag.Name + ">");
+			Writer.Write("</" + tag.Name + ">");
 		}
 
 		public void ParsedText(string decodedText)
 		{
-			writer.Write(HttpUtility.HtmlEncode(decodedText));
+			Writer.Write(HttpUtility.HtmlEncode(decodedText));
 		}
 
 		public void ParseError(string message)
 		{
-			writer.Write("<!-- " + HttpUtility.HtmlEncode(message) + " -->");
+			if (WriteErrors)
+				Writer.Write("<!-- " + HttpUtility.HtmlEncode(message) + " -->");
 		}
 	}
 }

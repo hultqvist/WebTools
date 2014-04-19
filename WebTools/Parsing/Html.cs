@@ -31,7 +31,9 @@ namespace SilentOrbit.Parsing
 		public static string Clean(string raw)
 		{
 			var w = new StringWriter();
-			HtmlCleaner.Clean(raw, w);
+			var writer = new HtmlWriter(w);
+			var cleaner = new HtmlCleaner(writer);
+			TagParser.Parse(raw, cleaner);
 			return w.GetStringBuilder().ToString();
 		}
 

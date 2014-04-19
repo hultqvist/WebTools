@@ -54,10 +54,10 @@ namespace SilentOrbit.Parsing
 			}
 		}
 
-		public void ParsedText(Tag parent, string decodedText)
+		public void ParsedText(string decodedText)
 		{
 			if (subOutput != null)
-				subOutput.ParsedText(parent, decodedText);
+				subOutput.ParsedText(decodedText);
 		}
 
 		public abstract void ParseError(string message);

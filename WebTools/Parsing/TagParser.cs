@@ -96,12 +96,12 @@ namespace SilentOrbit.Parsing
 						{
 							//Remaining is CDATA, though an error, this will be our iterpretation
 							cdata = raw.Substring(pos);
-							output.ParsedText(topTag, cdata);
+							output.ParsedText(cdata);
 							parsed = raw.Length;
 							break;
 						}
 						cdata = raw.Substring(pos, cdataEnd - pos);
-						output.ParsedText(topTag, cdata);
+						output.ParsedText(cdata);
 
 						pos = cdataEnd + 3;
 						parsed = pos;
@@ -294,7 +294,7 @@ namespace SilentOrbit.Parsing
 			{
 				string decoded = HttpUtility.HtmlDecode(raw.Substring(parsed, toPos - parsed));
 				decoded = decoded.Replace("&apos;", "'"); //Non standard
-				output.ParsedText(topTag, decoded);
+				output.ParsedText(decoded);
 			}
 
 			parsed = toPos;

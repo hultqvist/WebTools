@@ -16,7 +16,7 @@ namespace SilentOrbit.Parsing
         {
         }
 
-        public void ParsedText(Tag parent, string decodedText)
+        public void ParsedText(string decodedText)
         {
         }
 

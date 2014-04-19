@@ -99,7 +99,7 @@ namespace SilentOrbit
 					Directory.CreateDirectory(Path.GetDirectoryName(outputPath));
 
 					using (FileStream input = File.Open(f, FileMode.Open))
-					using (var writer = new HtmlWriter(outputPath))
+					using (var writer = new HtmlFileWriter(outputPath))
 					{
 						ITagOutput tagout = writer;
 						tagout = new HtmlCompressor(tagout);

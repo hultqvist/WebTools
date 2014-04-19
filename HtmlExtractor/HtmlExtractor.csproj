@@ -41,7 +41,6 @@
     <Compile Include="Options.cs" />
     <Compile Include="Extractor\HtmlCompressor.cs" />
     <Compile Include="Extractor\HtmlClassIdExtractor.cs" />
-    <Compile Include="Extractor\HtmlWriter.cs" />
     <Compile Include="Extractor\HtmlObfuscator.cs" />
     <Compile Include="Code\SharpKitClasses.cs" />
     <Compile Include="Code\CSharpSaver.cs" />
@@ -49,6 +48,7 @@
     <Compile Include="Data\SelectorData.cs" />
     <Compile Include="Css\CssObfuscator.cs" />
     <Compile Include="Data\Obfuscator.cs" />
+    <Compile Include="Extractor\HtmlFileWriter.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

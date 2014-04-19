@@ -39,10 +39,10 @@ namespace SilentOrbit.Extractor
 		/// </summary>
 		static Regex trim = new Regex(@"[\t\n\r]+");
 
-		public void ParsedText(Tag tag, string decodedText)
+		public void ParsedText(string decodedText)
 		{
 			string trimmed = trim.Replace(decodedText, "");
-			output.ParsedText(tag, trimmed);
+			output.ParsedText(trimmed);
 		}
 
 		public void ParseError(string message)

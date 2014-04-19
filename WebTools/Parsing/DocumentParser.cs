@@ -80,7 +80,7 @@ namespace SilentOrbit.Parsing
 			current = current.Parent;
 		}
 
-		public void ParsedText(Tag parent, string decodedText)
+		public void ParsedText(string decodedText)
 		{
 			if (current == null)
 				return; //Still at root

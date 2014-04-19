@@ -45,9 +45,9 @@ namespace SilentOrbit.Extractor
 			output.ParsedClosingTag(tag);
 		}
 
-		public void ParsedText(Tag tag, string decodedText)
+		public void ParsedText(string decodedText)
 		{
-			output.ParsedText(tag, decodedText);
+			output.ParsedText(decodedText);
 		}
 
 		public void ParseError(string message)

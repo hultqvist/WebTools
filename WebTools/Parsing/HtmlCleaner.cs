@@ -85,22 +85,17 @@ namespace SilentOrbit.Parsing
 			Hidden = 3,
 		}
 
-		readonly TextWriter writer;
+		readonly ITagOutput writer;
+
 		/// <summary>
 		/// Top tag that is hidden,
 		/// Nothing will be written until we reach the matching endtag
 		/// </summary>
 		Tag hidden = null;
 
-		HtmlCleaner(TextWriter writer)
+		public HtmlCleaner(ITagOutput writer)
 		{
 			this.writer = writer;
-		}
-
-		public static void Clean(string raw, TextWriter writer)
-		{
-			var c = new HtmlCleaner(writer);
-			TagParser.Parse(raw, c);
 		}
 
 		public void ParsedAttribute(Tag tag, TagNamespace ns, string key, string val)
@@ -216,44 +211,34 @@ namespace SilentOrbit.Parsing
 
 			if (escaped)
 			{
-				writer.Write("&lt;");
-				writer.Write(tag.Name);
-				if (tag.SelfClosed)
-					writer.Write("/");
-				writer.Write("&gt;");
+				writer.ParsedText("<" + tag.Name + (tag.SelfClosed ? "/" : "") + ">");
 				return;
 			}
 
+			//Image tags have a special format that links to the image without showing it
 			if (tag.Name == "img")
 			{
 				if (!tag.Attributes.ContainsKey("src"))
 					return;
 
-				string url = HttpUtility.HtmlEncode(tag.Attributes["src"]);
-				writer.Write("[<a");
-				foreach (var a in tag.Attributes)
-				{
-					if (a.Key == "src")
-						continue;
-					writer.Write(" " + a.Key + "=\"" + HttpUtility.HtmlEncode(a.Value) + "\"");
-				}
-				writer.Write(">");
+				//Tranform <img> to [<a href="">...</a>]
 				if (tag.Attributes.ContainsKey("title"))
-					writer.Write(HttpUtility.HtmlEncode(tag.Attributes["title"]));
+					writer.ParsedText(HttpUtility.HtmlEncode("[" + tag.Attributes["title"] + ": "));
 				else
-					writer.Write("img");
-				writer.Write("</a>: <a href=\"" + url + "\">" + url + "</a>]");
+					writer.ParsedText("[img: ");
+
+				var a = new Tag(null, "a", tag.Parent);
+				string url = tag.Attributes["src"];
+				a.Attributes.Add("href", url);
+				writer.ParsedOpeningTag(a);
+				writer.ParsedText(url);
+				writer.ParsedClosingTag(a);
+				writer.ParsedText("]");
 				return;
 			}
 
 			//Allowed, HTML
-			writer.Write("<");
-			writer.Write(tag.Name);
-			foreach (var a in tag.Attributes)
-				writer.Write(" " + a.Key + "=\"" + HttpUtility.HtmlEncode(a.Value) + "\"");
-			if (tag.SelfClosed)
-				writer.Write("/");
-			writer.Write(">");
+			writer.ParsedOpeningTag(tag);
 		}
 
 		public void ParsedClosingTag(Tag tag)
@@ -281,28 +266,25 @@ namespace SilentOrbit.Parsing
 
 			if (escaped)
 			{
-				writer.Write("&lt;/");
-				writer.Write(tag.Name);
-				writer.Write("&gt;");
+				writer.ParsedText("</" + tag.Name + ">");
 			}
 			else
 			{
-				writer.Write("</");
-				writer.Write(tag.Name);
-				writer.Write(">");
+				writer.ParsedClosingTag(tag);
 			}
 		}
 
-		public void ParsedText(Tag parent, string decodedText)
+		public void ParsedText(string decodedText)
 		{
 			if (hidden != null)
 				return;
 
-			writer.Write(HttpUtility.HtmlEncode(decodedText));
+			writer.ParsedText(decodedText);
 		}
 
 		public void ParseError(string message)
 		{
+			writer.ParseError(message);
 		}
 	}
 }
