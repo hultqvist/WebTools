@@ -330,7 +330,7 @@ namespace SilentOrbit.Web
 				}
 
 				if (resp.ContentLength > MaxContentLength)
-					throw new Exception("Content-Length(" + resp.ContentLength + ") > MaxContentLength(" + MaxContentLength + ")");
+					throw new InvalidDataException("Content-Length(" + resp.ContentLength + ") > MaxContentLength(" + MaxContentLength + ")");
 
 				//Read given length
 				byte[] data = reader.ReadBytes((int)resp.ContentLength);

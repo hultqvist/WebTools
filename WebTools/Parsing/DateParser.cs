@@ -6,7 +6,7 @@ namespace SilentOrbit.Parsing
     /// <summary>
     /// Slighlty more permissive Date parser
     /// </summary>
-    public class DateParser
+	public static class DateParser
     {
         static readonly DateTimeFormatInfo dateTimeFormat = CultureInfo.InvariantCulture.DateTimeFormat;
         static readonly string[] formats = new string[]

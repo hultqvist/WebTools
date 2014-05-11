@@ -160,7 +160,7 @@ namespace SilentOrbit.IO
 					return;
 				total += read;
 				if (total > aboutMax)
-					throw new Exception("Read more than MaxContentLength(" + aboutMax + ")");
+					throw new InvalidDataException("Read more than MaxContentLength(" + aboutMax + ")");
 				outStream.Write(buffer, 0, read);
 			}
 		}

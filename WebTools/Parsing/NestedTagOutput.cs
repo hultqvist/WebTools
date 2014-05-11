@@ -17,7 +17,7 @@ namespace SilentOrbit.Parsing
 		/// </summary>
 		ITagOutput subOutput;
 
-		public NestedTagOutput()
+		protected NestedTagOutput()
 		{
 		}
 

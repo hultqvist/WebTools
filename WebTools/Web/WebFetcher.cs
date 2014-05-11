@@ -62,7 +62,7 @@ namespace SilentOrbit.Web
 					Console.WriteLine("Redirect to: " + resp.Location);
 					redirections += 1;
 					if (redirections > 10)
-						throw new Exception("Too many redirection");
+						throw new InvalidOperationException("Too many redirection");
 					Http.Dispose();
 					continue;
 				}

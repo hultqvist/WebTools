@@ -9,7 +9,7 @@ namespace SilentOrbit.Parsing
 		TagNamespace(string ns)
 		{
 			if (ns == null)
-				throw new ArgumentNullException();
+				throw new ArgumentNullException("ns");
 			this.Namespace = ns;
 		}
 
