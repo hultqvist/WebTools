@@ -19,6 +19,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
+    <Commandlineparameters>--htmlroot WebClient/Html/ --suffix Fragment --namespace SilentOrbit.Script --internal --element-property --bubble-id --bubble-class --generate-classes --minimize-names --outputCS WebClient/Script/Generated.cs --inputCSS ../dev/www/style.css --outputHTML ../obfuscated/WebClient --outputCSS ../obfuscated/WebClient/style.css</Commandlineparameters>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Optimize>true</Optimize>

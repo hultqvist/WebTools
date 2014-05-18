@@ -25,6 +25,9 @@ namespace SilentOrbit
 
 		public static int Main(string[] args)
 		{
+			//BugFix:
+			System.Web.Util.HttpEncoder.Current = System.Web.Util.HttpEncoder.Default;
+
 			#if DEBUGx
 			args = new string[]{
 				"--htmlroot", "TestData",
