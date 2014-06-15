@@ -295,6 +295,8 @@ namespace SilentOrbit.Web
 					case "link":
 					case "ms-author-via":
 					case "alternate-protocol":
+					case "pool-info":
+					case "edge-control":
 						break; //Ignore
 					default:
 						throw new NotImplementedException(line);
