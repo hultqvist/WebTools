@@ -72,7 +72,9 @@ namespace SilentOrbit.Web
 
 		public void Dispose()
 		{
-			if (socket != null)
+			if (socket == null)
+				return;
+			if (socket.Connected)
 				socket.Shutdown(SocketShutdown.Both);
 			socket = null;
 		}
@@ -297,6 +299,7 @@ namespace SilentOrbit.Web
 					case "alternate-protocol":
 					case "pool-info":
 					case "edge-control":
+					case "content-security-policy":
 						break; //Ignore
 					default:
 						throw new NotImplementedException(line);
