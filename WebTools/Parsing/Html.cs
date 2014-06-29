@@ -37,6 +37,15 @@ namespace SilentOrbit.Parsing
 			return w.GetStringBuilder().ToString();
 		}
 
+		public static string CleanToPlain(string raw)
+		{
+			var w = new StringWriter();
+			var writer = new PlainWriter(w);
+			var cleaner = new HtmlCleaner(writer);
+			TagParser.Parse(raw, cleaner);
+			return w.GetStringBuilder().ToString();
+		}
+
 /*		public static implicit operator Html (string text)
 		{
 			return new Html (HttpUtility.HtmlEncode (text));
