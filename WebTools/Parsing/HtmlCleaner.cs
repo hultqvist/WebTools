@@ -223,7 +223,7 @@ namespace SilentOrbit.Parsing
 
 				//Tranform <img> to [<a href="">...</a>]
 				if (tag.Attributes.ContainsKey("title"))
-					writer.ParsedText(HttpUtility.HtmlEncode("[" + tag.Attributes["title"] + ": "));
+					writer.ParsedText("[" + tag.Attributes["title"] + ": ");
 				else
 					writer.ParsedText("[img: ");
 
