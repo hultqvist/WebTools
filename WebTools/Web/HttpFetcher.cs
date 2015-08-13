@@ -277,9 +277,10 @@ namespace SilentOrbit.Web
 						break;
 
 						#if DEBUG
-					case "server":
+					case "content-type": //text/html
 					case "date":
-					case "content-type":
+					case "frame-options": //DENY
+					case "server":
 					case "set-cookie":
 					case "vary":
 					case "accept-ranges":
