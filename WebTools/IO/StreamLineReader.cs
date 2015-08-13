@@ -7,7 +7,7 @@ namespace SilentOrbit.IO
     public class StreamLineReader : LineReader
     {
         readonly Stream stream;
-        readonly byte[] buffer = new byte[1000];
+        readonly byte[] buffer = new byte[9000]; //Up to 8k
         /// <summary>
         /// bytes filled in buffer
         /// </summary>
