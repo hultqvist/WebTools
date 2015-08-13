@@ -12,6 +12,8 @@ using System.Security.Cryptography.X509Certificates;
 using System.Security.Authentication;
 using SilentOrbit.Web;
 using System.Threading;
+using Org.BouncyCastle.Crypto.Tls;
+using Org.BouncyCastle.Security;
 
 namespace SilentOrbit.Web
 {
@@ -103,11 +105,18 @@ namespace SilentOrbit.Web
 			tcp.EndConnect(result);
 			socket = tcp.Client;
 			stream = tcp.GetStream();
+
 			if (address.Scheme == "https")
 			{
+				//Broken in mono with newer ciphers
+				/*
 				var ssl = new SslStream(stream, false, VerifyCert);
 				ssl.AuthenticateAsClient(address.Host);
-				stream = ssl;
+				stream = ssl;*/
+
+				var handler = new TlsClientProtocol(stream, new SecureRandom());
+				handler.Connect(new MyTlsClient(address.Host));
+				stream = handler.Stream;
 			}
 
 			reader = new StreamLineReader(stream);

@@ -53,6 +53,8 @@
     <Compile Include="Parsing\DocumentParser.cs" />
     <Compile Include="Parsing\HtmlWriter.cs" />
     <Compile Include="Parsing\PlainWriter.cs" />
+    <Compile Include="Web\MyTlsClient.cs" />
+    <Compile Include="Web\MyTlsAuthentication.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -63,6 +65,10 @@
     <ProjectReference Include="..\DnsSharp\ARSoft.Tools.Net\ARSoft.Tools.Net.csproj">
       <Project>{65BFA748-C640-49B0-B506-34BBB165233A}</Project>
       <Name>ARSoft.Tools.Net</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\3rd\bc-csharp\crypto\BouncyCastle.csproj">
+      <Project>{4C235092-820C-4DEB-9074-D356FB797D8B}</Project>
+      <Name>BouncyCastle</Name>
     </ProjectReference>
   </ItemGroup>
   <ProjectExtensions>
