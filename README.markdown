@@ -5,10 +5,6 @@ These can then be used to safely refer to ID and class names wihtout risking of 
 
 The code can then be converted using the [SharpKit](http://sharpkit.net) C#->JavaScript generator.
 
-# Discussion, Mailing list
+# Discussion
 
-Email to web-tools-sharp@googlegroups.com
-
-[Mailing list on Google Groups](https://groups.google.com/forum/#!forum/web-tools-sharp)
-
-Contact me directly on phq@silentorbit.com
+Contact me directly on hultqvist@silentorbit.com
